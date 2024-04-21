@@ -214,3 +214,81 @@ public class MyRestController {
 ```
 
 In summary, `@Controller` is used for traditional web MVC applications where the controller's methods handle rendering views, while `@RestController` is used for building RESTful APIs where the controller's methods return data directly in the response body. The choice between `@Controller` and `@RestController` depends on the type of application you are building and the desired response format.
+
+### 11. What are some common annotations used in Spring for managing bean properties, injection, and state? Could you explain the purpose of each annotation and how they are typically used in a Spring application?
+
+Let's break down each of these annotations based on their usage in Spring related to bean properties, injection, and state management:
+
+### Used In Spring Bean Properties:
+
+1. **@Lazy**:
+
+   - This annotation is used to specify that a bean should be lazily initialized, meaning it won't be created until it's first requested.
+   - It's useful for reducing startup time and resource consumption by deferring the creation of beans until they are needed.
+
+2. **@Profile**:
+
+   - This annotation is used to define beans that should be active only in certain profiles.
+   - It allows you to specify different configurations for different environments (e.g., development, production) or scenarios.
+
+3. **@Order**:
+
+   - This annotation is used to specify the order in which beans should be sorted.
+   - It's commonly used with beans that implement the `Ordered` interface or with `@Order` annotation on methods to define the execution order of aspects, filters, or interceptors.
+
+4. **@Primary**:
+
+   - This annotation is used to indicate that a particular bean should be given precedence when multiple beans of the same type are present.
+   - It's useful when there are multiple beans that could be injected into a single dependency, and you want to specify the default one.
+
+5. **@Scope**:
+
+   - This annotation is used to specify the scope of a Spring bean, defining its lifecycle and visibility.
+   - It allows you to control how and when bean instances are created, reused, and destroyed.
+
+6. **@Conditional**:
+
+   - This annotation is used to conditionally create beans based on the evaluation of a condition.
+   - It allows you to dynamically determine whether a bean should be created or not, based on the application context, environment, or other factors.
+
+7. **@DependsOn**:
+   - This annotation is used to specify the dependencies between beans.
+   - It ensures that the specified beans are initialized before the bean using this annotation.
+
+### Used In Spring Bean Injection:
+
+1. **@Resource**:
+
+   - This annotation is used for resource injection, typically for injecting resources like JNDI, EJB, etc.
+   - It can be applied at the field or method level for injecting resources.
+
+2. **@Autowired**:
+
+   - This annotation is used for automatic dependency injection of beans.
+   - It automatically wires beans by type, matching them to a compatible bean in the Spring container.
+
+3. **@Inject**:
+
+   - This annotation is similar to `@Autowired` but is a part of the Java Dependency Injection (JSR-330) standard.
+   - It's used to inject dependencies into beans, providing a more portable and standard way of dependency injection.
+
+4. **@Qualifier**:
+
+   - This annotation is used in conjunction with `@Autowired` or `@Inject` to specify which bean should be injected when multiple beans of the same type are present.
+   - It's used to disambiguate between beans by specifying the bean name or qualifier.
+
+5. **@Primary**:
+   - As mentioned earlier, this annotation is used to specify the default bean to be injected when there are multiple beans of the same type.
+
+### Used In Spring Bean State:
+
+1. **@PostConstruct**:
+
+   - This annotation is used to specify a method to be executed after a bean has been initialized by the Spring container.
+   - It's commonly used for initialization tasks that need to be performed once the bean has been fully initialized.
+
+2. **@PreDestroy**:
+   - This annotation is used to specify a method to be executed before a bean is removed from the Spring container.
+   - It's commonly used for cleanup tasks or releasing resources held by the bean before it's destroyed.
+
+That covers the explanations for the annotations used in Spring related to bean properties, injection, and state management. Each annotation serves a specific purpose in configuring, injecting, and managing Spring beans within the application context.
