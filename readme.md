@@ -1,8 +1,8 @@
 # Welcome to interviewprep 🚀
 
-![inteviewprep0](link to Image)
-![inteviewprep1](link to Image)
-![inteviewprep2](link to Image)
+![inteviewprep0](./assets/interviewprep0.png)
+![inteviewprep1](./assets/interviewprep1.png)
+![inteviewprep2](./assets/interviewprep2.png)
 
 ## ❓ what it is
 
@@ -12,7 +12,7 @@
 
 ## 🏠 [website](https://jcoding09.github.io)
 
-## 🚀 [PDF Version of Complete Notes (Testing Phase) ](./dist/lectures.pdf)
+[## 🚀 [PDF Version of Complete Notes (Testing Phase) ](./dist/lectures.pdf)]::
 
 <br>
 
