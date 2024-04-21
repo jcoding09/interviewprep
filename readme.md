@@ -1,8 +1,9 @@
 # Welcome to interviewprep 🚀
 
+<img src="./assets/interviewprep0.png" width="20" height="20">
+<!--- 
 ![inteviewprep0](./assets/interviewprep0.png =20x20)
-
-<!--- ![inteviewprep1](./assets/interviewprep1.png)
+![inteviewprep1](./assets/interviewprep1.png)
 ![inteviewprep2](./assets/interviewprep2.png)-->
 
 ## ❓ what it is
