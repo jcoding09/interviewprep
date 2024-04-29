@@ -34,11 +34,17 @@
 
 ### \*. What happens when you override both the 'equals' and 'hashCode' methods in Java? What if 'hashCode' returns the same value while 'equals' returns false?
 
-### \*. Explore the features introduced in Java 8 such as Function Interface, Method Reference, Streams, and Collections.
+### \*. Explore the features introduced in Java 8 such as Function Interface, Method Reference, Streams, lambda function and Collections.
+
+### \*. What are the different types of functional interfaces in java ?
+
+### \*. How do you invoke lambda function ?
 
 ### \*. How is the diamond problem resolved in interfaces after Java 8?
 
 ### \*. Differentiate between abstract classes and interfaces in Java, discussing their respective use cases.
+
+### \*. What is marker interface ?
 
 ### \*. What is multithreading in Java, and how can you implement it using threads (Start with how thread is created)?
 
@@ -93,3 +99,9 @@
 ### \*. What are the differences between TreeSet and HashSet in Java, and when would you use each?
 
 ### \*. Compare Vector and ArrayList in Java, considering their features and use cases.
+
+### \*. How to create a custom annotation?
+
+### \*. What is Record In Java?
+
+### \*. Map vs. flatMap in Stream API.

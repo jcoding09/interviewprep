@@ -292,3 +292,38 @@ Let's break down each of these annotations based on their usage in Spring relate
    - It's commonly used for cleanup tasks or releasing resources held by the bean before it's destroyed.
 
 That covers the explanations for the annotations used in Spring related to bean properties, injection, and state management. Each annotation serves a specific purpose in configuring, injecting, and managing Spring beans within the application context.
+
+### 12. Explain Dispatcher Servlet in Spring Boot.
+
+### 13. How to read data from HTTP?
+
+### 14. How to schedule batch job in Spring Boot?
+
+### 15. How to change IP address in Spring Boot?
+
+### 16. How to add different server in your Spring Boot prject?
+
+### 17. How Spring MVC works ?
+
+### 18. When dealing with batch jobs in a Spring Boot application, How to implement an automated solution to handle failures?
+
+### 19. Is singleton bean thread safe?
+
+### 20. Spring Boot checklist
+
+NoSQL,Reactive Framework
+JMeter
+JMC
+12 Factor Application
+Design Principles
+Horizontal vs Vertical Scaling
+Master child replication
+Caching
+Spring boot repository
+Java 8 Streams
+Spring boot filters
+Authentication
+Microservices architecture
+Synchronous vs Asynchronous
+EDD
+PDD
