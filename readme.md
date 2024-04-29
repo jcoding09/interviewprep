@@ -30,3 +30,5 @@
 #### [Module 3 : JavaScript](./module/module003/lecture-001.md)
 
 #### [Module 4 : NodeJS](./module/module004/lecture-001.md)
+
+#### [Module 5 : Q&A](./module/module005/lecture-001.md)
