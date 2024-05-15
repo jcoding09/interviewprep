@@ -23,12 +23,16 @@
 
 ### 📌 <ins>Module <ins>
 
-#### [Module 1 : Java](./module/module001/lecture-001.md)
+#### [Module 1 : JavaScript](./module/module0001/lecture-001.md)
 
-#### [Module 2 : SpringBoot](./module/module002/lecture-001.md)
+#### [Module 2 : NodeJS](./module/module0002/lecture-001.md)
 
-#### [Module 3 : JavaScript](./module/module003/lecture-001.md)
+#### [Module 3 : ReactJS](./module/module0003/lecture-001.md)
 
-#### [Module 4 : NodeJS](./module/module004/lecture-001.md)
+#### [Module 4 : MongoDB](./module/module0004/lecture-001.md)
 
-#### [Module 5 : Q&A](./module/module005/lecture-001.md)
+#### [Module 5 : Java](./module/module0005/lecture-001.md)
+
+#### [Module 6 : SpringBoot](./module/module0006/lecture-001.md)
+
+#### [Module 7 : Q&A](./module/module0007/lecture-001.md)
