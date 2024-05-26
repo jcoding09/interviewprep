@@ -105,3 +105,9 @@
 ### \*. What is Record In Java?
 
 ### \*. Map vs. flatMap in Stream API.
+
+### \*. Discuss Stringbuffer vs Stringbuilder vs string
+
+### \*. Describe Has a & Is a relationship.
+
+### \*. What is Try with resources in exception handling.
