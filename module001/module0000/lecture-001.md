@@ -1352,6 +1352,118 @@ In this example, if two `Person` objects have the same name but different ages, 
 - Overriding both `equals` and `hashCode` methods ensures consistency and performance when objects are used in hash-based collections.
 - If `hashCode` returns the same value while `equals` returns `false`, it can lead to hash collisions and inconsistent behavior in hash-based collections. It's important to ensure that `equals` and `hashCode` are consistent to maintain the correctness and performance of hash-based operations.
 
+## \*. Explain Comparator and comparable in JAVA 8, with code example. Give difference in table.
+
+In Java, `Comparable` and `Comparator` are two interfaces used for sorting objects. Both provide ways to determine the order of objects, but they have different use cases and methods of implementation.
+
+### Comparable
+
+`Comparable` is used to define the natural ordering of objects. A class that implements `Comparable` must override the `compareTo` method, which compares `this` object with the specified object for order.
+
+#### Example of Comparable
+
+```java
+public class Person implements Comparable<Person> {
+    private String name;
+    private int age;
+
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    @Override
+    public int compareTo(Person other) {
+        return this.age - other.age; // Compare based on age
+    }
+
+    @Override
+    public String toString() {
+        return name + " (" + age + ")";
+    }
+
+    public static void main(String[] args) {
+        List<Person> people = new ArrayList<>();
+        people.add(new Person("Alice", 30));
+        people.add(new Person("Bob", 25));
+        people.add(new Person("Charlie", 35));
+
+        Collections.sort(people);
+        people.forEach(System.out::println);
+    }
+}
+```
+
+### Comparator
+
+`Comparator` is used to define custom orderings of objects. It can be implemented as a separate class, allowing multiple different comparisons for the same type of objects. Java 8 introduced lambda expressions and method references, which make using `Comparator` more concise.
+
+#### Example of Comparator
+
+```java
+import java.util.*;
+
+public class Person {
+    private String name;
+    private int age;
+
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    @Override
+    public String toString() {
+        return name + " (" + age + ")";
+    }
+
+    public static void main(String[] args) {
+        List<Person> people = new ArrayList<>();
+        people.add(new Person("Alice", 30));
+        people.add(new Person("Bob", 25));
+        people.add(new Person("Charlie", 35));
+
+        // Sort by age using Comparator
+        people.sort(Comparator.comparingInt(p -> p.age));
+        people.forEach(System.out::println);
+
+        // Sort by name using Comparator with method reference
+        people.sort(Comparator.comparing(Person::getName));
+        people.forEach(System.out::println);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+}
+```
+
+### Difference Between Comparable and Comparator
+
+| Feature                 | `Comparable`                                        | `Comparator`                                           |
+| ----------------------- | --------------------------------------------------- | ------------------------------------------------------ |
+| **Package**             | `java.lang`                                         | `java.util`                                            |
+| **Method**              | `compareTo(Object o)`                               | `compare(Object o1, Object o2)`                        |
+| **Usage**               | Natural ordering                                    | Custom ordering                                        |
+| **Implementation**      | Class implements `Comparable`                       | Separate class or lambda expression                    |
+| **Single vs Multiple**  | Single comparison logic                             | Multiple comparison logics                             |
+| **Code Modification**   | Modifies the class whose objects are being compared | Does not modify the class being compared               |
+| **Java 8 Enhancements** | Not directly affected                               | Enhanced with lambda expressions and method references |
+
+### Summary
+
+- **Use `Comparable`**: When you want to define a single, natural ordering for objects of a class. The class itself implements the `Comparable` interface and defines the `compareTo` method.
+- **Use `Comparator`**: When you need multiple ways to compare objects, or when you cannot modify the class whose objects you want to sort. Java 8's lambda expressions and method references make it easier and more flexible to create comparator instances.
+
+### Additional Notes
+
+- **Comparable**: Best used for objects that have one logical order.
+- **Comparator**: Provides more flexibility and can be used to create multiple different orderings for objects. Ideal for use cases where the ordering logic can change or needs to be dynamic.
+
 ## \*. What are the different types of functional interfaces in java ?
 
 In Java, a functional interface is an interface that contains only one abstract method. Functional interfaces are a key concept in Java's functional programming paradigm, particularly with the introduction of lambda expressions in Java 8. There are several types of functional interfaces in Java, and some of the commonly used ones include:
@@ -1631,6 +1743,124 @@ public class MyClass {
 ```
 
 In this example, the `MyAnnotation` annotation is applied to the `myMethod()` method with specified values for its elements (`value` and `priority`).
+
+## \*. Explain Thread Lifecycle.
+
+In Java, a thread undergoes several phases during its lifecycle. These phases represent the different states a thread can be in from its creation to its termination. Understanding these phases is crucial for effective multithreaded programming. The phases of a thread lifecycle in Java are as follows:
+
+1. **New (Born)**
+2. **Runnable (Ready to run)**
+3. **Blocked**
+4. **Waiting**
+5. **Timed Waiting**
+6. **Terminated (Dead)**
+
+### Phases of Thread Lifecycle
+
+1. **New (Born)**
+
+   - **Description**: When a thread is created, it is in the new state. In this state, the thread is instantiated but not yet started.
+   - **Example**:
+     ```java
+     Thread t = new Thread(() -> {
+         // Task to be performed
+     });
+     ```
+
+2. **Runnable (Ready to run)**
+
+   - **Description**: A thread enters the runnable state when the `start()` method is called. In this state, the thread is ready to run and is waiting for CPU time. It can move between the runnable state and running state.
+   - **Example**:
+     ```java
+     t.start();
+     ```
+
+3. **Blocked**
+
+   - **Description**: A thread enters the blocked state when it tries to access a protected section of code that is currently locked by another thread. It will remain in this state until the lock is released.
+   - **Example**:
+     ```java
+     synchronized (someObject) {
+         // Protected code
+     }
+     ```
+
+4. **Waiting**
+
+   - **Description**: A thread enters the waiting state when it is waiting indefinitely for another thread to perform a particular action. This can occur when `wait()`, `join()`, or `park()` methods are called without a timeout.
+   - **Example**:
+     ```java
+     synchronized (someObject) {
+         someObject.wait(); // Thread waits here
+     }
+     ```
+     ```java
+     t.join(); // Current thread waits for t to finish
+     ```
+
+5. **Timed Waiting**
+
+   - **Description**: A thread is in the timed waiting state when it is waiting for a specified amount of time. This can occur when `sleep()`, `wait()`, `join()`, or `parkNanos()`/`parkUntil()` methods are called with a timeout.
+   - **Example**:
+     ```java
+     Thread.sleep(1000); // Thread sleeps for 1000 milliseconds
+     ```
+     ```java
+     synchronized (someObject) {
+         someObject.wait(1000); // Wait for 1000 milliseconds
+     }
+     ```
+     ```java
+     t.join(1000); // Wait for t to finish or for 1000 milliseconds
+     ```
+
+6. **Terminated (Dead)**
+   - **Description**: A thread enters the terminated state when it has completed its task or when it is explicitly terminated. Once a thread is in this state, it cannot be restarted.
+   - **Example**:
+     ```java
+     public void run() {
+         // Task to be performed
+         System.out.println("Thread is running");
+     }
+     // After the run() method completes, the thread enters the terminated state
+     ```
+
+### Visual Representation
+
+Here is a visual representation of the thread lifecycle:
+
+```plaintext
+       +---+  start()  +-----------+
+       |New|---------> | Runnable  |<----------+
+       +---+           +-----------+           |
+                         /   |  ^               |
+                        /    |  |               |
+                       /     v  |               |
+                +-----+    Running              |
+                |Block|       |                 |
+                +-----+       |                 |
+                  |           |                 |
+                  v           |                 |
+          +-----------+       |       +---------------+
+          |  Waiting  |       |       | Timed Waiting |
+          +-----------+       |       +---------------+
+                |             |               ^
+                +-------------+---------------+
+                                |
+                                v
+                          +-----------+
+                          |Terminated |
+                          +-----------+
+```
+
+### Summary
+
+- **New**: Thread object is created but not yet started.
+- **Runnable**: Thread is ready to run and waiting for CPU time.
+- **Blocked**: Thread is waiting to acquire a lock.
+- **Waiting**: Thread is waiting indefinitely for another thread's action.
+- **Timed Waiting**: Thread is waiting for a specified amount of time.
+- **Terminated**: Thread has completed execution or is terminated.
 
 ## \*. What is multithreading in Java, and how can you implement it using threads (Start with how thread is created)?
 
@@ -3824,6 +4054,188 @@ public class TreeSetExample {
 - Use `TreeSet` when you need elements to be ordered (sorted), or you need to perform range queries (e.g., finding elements within a certain range).
 - Avoid using `TreeSet` when dealing with large datasets or when performance is critical, as it can be slower than `HashSet` for basic operations like add, remove, and contains.
 
+## \*. What are the differences between HashMap and TreeMap in Java, and when would you use each? Give simple code example.
+
+In Java, `HashMap` and `TreeMap` are two important implementations of the `Map` interface, each with its own characteristics and use cases. Below, I explain the differences between `HashMap` and `TreeMap` with a table summarizing these differences and provide code examples for each.
+
+### Comparison Table
+
+| Feature         | HashMap                     | TreeMap                      |
+| --------------- | --------------------------- | ---------------------------- |
+| Order           | No specific order           | Sorted order based on keys   |
+| Performance     | O(1) for `get` and `put`    | O(log n) for `get` and `put` |
+| Null Key        | Allows one null key         | Does not allow null keys     |
+| Null Values     | Allows multiple null values | Allows multiple null values  |
+| Synchronization | Not synchronized            | Not synchronized             |
+| Use Case        | Fast lookups and insertions | Sorted data, range queries   |
+
+### HashMap
+
+`HashMap` is a part of Java's collection framework and provides a basic implementation of the `Map` interface, which stores key-value pairs. It is based on a hash table.
+
+#### Characteristics of HashMap:
+
+- **Order**: Does not maintain any order of the elements.
+- **Performance**: Offers constant-time complexity, O(1), for basic operations like `get` and `put`, assuming the hash function disperses the elements properly among the buckets.
+- **Null Values**: Allows one null key and multiple null values.
+- **Synchronization**: Not synchronized, making it unsuitable for concurrent access from multiple threads.
+
+#### Code Example of HashMap:
+
+```java
+import java.util.HashMap;
+
+public class HashMapExample {
+    public static void main(String[] args) {
+        HashMap<Integer, String> hashMap = new HashMap<>();
+
+        // Adding elements to the HashMap
+        hashMap.put(1, "One");
+        hashMap.put(2, "Two");
+        hashMap.put(3, "Three");
+
+        // Accessing elements
+        System.out.println("Value for key 1: " + hashMap.get(1));
+
+        // Iterating through the HashMap
+        for (Integer key : hashMap.keySet()) {
+            System.out.println("Key: " + key + ", Value: " + hashMap.get(key));
+        }
+    }
+}
+```
+
+### TreeMap
+
+`TreeMap` is another implementation of the `Map` interface, which stores key-value pairs in a Red-Black tree structure.
+
+#### Characteristics of TreeMap:
+
+- **Order**: Maintains a sorted order of the elements based on the natural ordering of the keys or by a comparator provided at map creation time.
+- **Performance**: Offers logarithmic-time complexity, O(log n), for basic operations like `get` and `put`.
+- **Null Values**: Does not allow any null key but can have multiple null values.
+- **Synchronization**: Not synchronized, making it unsuitable for concurrent access from multiple threads.
+
+#### Code Example of TreeMap:
+
+```java
+import java.util.TreeMap;
+
+public class TreeMapExample {
+    public static void main(String[] args) {
+        TreeMap<Integer, String> treeMap = new TreeMap<>();
+
+        // Adding elements to the TreeMap
+        treeMap.put(1, "One");
+        treeMap.put(2, "Two");
+        treeMap.put(3, "Three");
+
+        // Accessing elements
+        System.out.println("Value for key 1: " + treeMap.get(1));
+
+        // Iterating through the TreeMap
+        for (Integer key : treeMap.keySet()) {
+            System.out.println("Key: " + key + ", Value: " + treeMap.get(key));
+        }
+    }
+}
+```
+
+### Summary
+
+- Use `HashMap` when you need a simple, fast implementation without any order guarantee and you are dealing with non-thread-safe operations.
+- Use `TreeMap` when you need sorted key-value pairs, range queries, or when you need to navigate the map in a sorted manner.
+
+## \*. What are the differences between HashMap and HashTable in Java, and when would you use each? Give simple code example.
+
+### Differences Between `HashMap` and `Hashtable` in Java
+
+| Feature             | `HashMap`                                       | `Hashtable`                             |
+| ------------------- | ----------------------------------------------- | --------------------------------------- |
+| **Order**           | No specific order                               | No specific order                       |
+| **Performance**     | Generally faster due to lack of synchronization | Generally slower due to synchronization |
+| **Null Values**     | Allows one null key and multiple null values    | Does not allow null keys or values      |
+| **Synchronization** | Not synchronized                                | Synchronized                            |
+| **Thread Safety**   | Not thread-safe                                 | Thread-safe                             |
+| **Introduced In**   | Java 1.2 (part of Collections Framework)        | Java 1.0 (legacy class)                 |
+| **Legacy**          | No                                              | Yes (part of original Java 1.0)         |
+
+### When to Use Each
+
+- **`HashMap`**: Use when you do not need synchronized access, need better performance, and can handle null keys and values.
+- **`Hashtable`**: Use when you need thread-safe operations without manually synchronizing code, and you can avoid using null keys and values.
+
+### Code Examples
+
+#### HashMap Example
+
+```java
+import java.util.HashMap;
+
+public class HashMapExample {
+    public static void main(String[] args) {
+        HashMap<Integer, String> hashMap = new HashMap<>();
+
+        // Adding elements to the HashMap
+        hashMap.put(1, "One");
+        hashMap.put(2, "Two");
+        hashMap.put(3, "Three");
+
+        // Accessing elements
+        System.out.println("Value for key 1: " + hashMap.get(1));
+
+        // Iterating through the HashMap
+        for (Integer key : hashMap.keySet()) {
+            System.out.println("Key: " + key + ", Value: " + hashMap.get(key));
+        }
+    }
+}
+```
+
+#### Hashtable Example
+
+```java
+import java.util.Hashtable;
+
+public class HashtableExample {
+    public static void main(String[] args) {
+        Hashtable<Integer, String> hashtable = new Hashtable<>();
+
+        // Adding elements to the Hashtable
+        hashtable.put(1, "One");
+        hashtable.put(2, "Two");
+        hashtable.put(3, "Three");
+
+        // Accessing elements
+        System.out.println("Value for key 1: " + hashtable.get(1));
+
+        // Iterating through the Hashtable
+        for (Integer key : hashtable.keySet()) {
+            System.out.println("Key: " + key + ", Value: " + hashtable.get(key));
+        }
+    }
+}
+```
+
+### Detailed Comparison Table
+
+| Feature             | `HashMap`                                                     | `Hashtable`                                                       |
+| ------------------- | ------------------------------------------------------------- | ----------------------------------------------------------------- |
+| **Order**           | No specific order                                             | No specific order                                                 |
+| **Performance**     | Generally faster due to lack of synchronization               | Generally slower due to synchronization                           |
+| **Null Values**     | Allows one null key and multiple null values                  | Does not allow null keys or values                                |
+| **Synchronization** | Not synchronized                                              | Synchronized                                                      |
+| **Thread Safety**   | Not thread-safe                                               | Thread-safe                                                       |
+| **Legacy**          | Part of Java Collections Framework (Java 1.2)                 | Legacy class from Java 1.0                                        |
+| **Iterating**       | Fail-fast iterator                                            | Fail-safe iterator                                                |
+| **Usage**           | Best for non-thread-safe scenarios requiring high performance | Best for thread-safe scenarios requiring built-in synchronization |
+| **Data Structure**  | Hash table                                                    | Hash table                                                        |
+
+### Summary
+
+- **Use `HashMap`**: When you need a non-synchronized, high-performance map that can store null keys and values.
+- **Use `Hashtable`**: When you need a thread-safe map without having to implement synchronization manually and can avoid null keys and values.
+
 ## \*. Compare Vector and ArrayList in Java, considering their features and use cases. Give simple code example.
 
 | Criteria        | Vector                                   | ArrayList                                 |
@@ -4221,3 +4633,333 @@ while (iterator.hasNext()) {
 - **Performance**: Performance considerations may vary based on the collection type and size, as well as the complexity of the iteration operation. Some methods may have better performance characteristics depending on the collection type and size. For example, traditional for loops might be more efficient for arrays, while iterators might perform better for certain types of collections like LinkedList.
 
 - **Readability and Maintainability**: Choose the iteration method that enhances the readability and maintainability of your code, considering the familiarity of the method to your team members and the alignment with the code style guidelines.
+
+## \*. Explain lambda expression & explain difference between lambda expression and annonymous inner class.
+
+### Lambda Expression in Java
+
+Lambda expressions in Java provide a way to write concise and functional code by enabling you to create anonymous functions. They were introduced in Java 8 and are particularly useful for implementing functional interfaces, which are interfaces with a single abstract method. Lambda expressions help reduce boilerplate code and improve readability.
+
+#### Syntax of Lambda Expression
+
+A lambda expression consists of the following parts:
+
+1. **Parameter list** enclosed in parentheses.
+2. **Arrow token** `->` which separates the parameter list from the body.
+3. **Body** which can be a single expression or a block of code.
+
+```java
+(parameters) -> expression
+(parameters) -> { statements; }
+```
+
+### Example: Lambda Expression vs. Anonymous Inner Class
+
+#### 1. Using Anonymous Inner Class
+
+```java
+import java.util.*;
+
+public class AnonymousInnerClassExample {
+    public static void main(String[] args) {
+        List<String> names = Arrays.asList("Alice", "Bob", "Charlie");
+
+        // Using anonymous inner class
+        Collections.sort(names, new Comparator<String>() {
+            @Override
+            public int compare(String s1, String s2) {
+                return s1.compareTo(s2);
+            }
+        });
+
+        for (String name : names) {
+            System.out.println(name);
+        }
+    }
+}
+```
+
+In this example, we use an anonymous inner class to define the comparator for sorting the list of names. This requires a lot of boilerplate code.
+
+#### 2. Using Lambda Expression
+
+```java
+import java.util.*;
+
+public class LambdaExpressionExample {
+    public static void main(String[] args) {
+        List<String> names = Arrays.asList("Alice", "Bob", "Charlie");
+
+        // Using lambda expression
+        Collections.sort(names, (s1, s2) -> s1.compareTo(s2));
+
+        for (String name : names) {
+            System.out.println(name);
+        }
+    }
+}
+```
+
+In this example, we achieve the same result using a lambda expression. The code is more concise and easier to read.
+
+### Key Differences Between Lambda Expressions and Anonymous Inner Classes
+
+| Feature                     | Anonymous Inner Class                               | Lambda Expression                        |
+| --------------------------- | --------------------------------------------------- | ---------------------------------------- |
+| **Boilerplate Code**        | More boilerplate code                               | Less boilerplate code                    |
+| **Readability**             | Less readable due to verbosity                      | More readable due to concise syntax      |
+| **Creation of Class Files** | Creates an additional class file                    | Does not create additional class files   |
+| **Syntax**                  | Uses `new` keyword and overrides methods explicitly | Uses `->` syntax for defining the method |
+| **Scope**                   | Has a separate scope from the enclosing class       | Shares the scope of the enclosing class  |
+| **'this' Reference**        | Refers to the anonymous inner class instance        | Refers to the enclosing class instance   |
+
+### Detailed Explanation of Key Differences
+
+1. **Boilerplate Code**: Anonymous inner classes require more lines of code because you need to explicitly define the method signature and override the method. Lambda expressions, on the other hand, provide a concise way to achieve the same functionality.
+
+2. **Readability**: Due to their concise nature, lambda expressions enhance the readability of the code. They allow developers to focus on the functionality rather than the syntax.
+
+3. **Creation of Class Files**: Anonymous inner classes result in the creation of an additional class file (e.g., `OuterClass$1.class`). Lambda expressions do not create such additional class files, making the bytecode less cluttered.
+
+4. **Syntax**: Anonymous inner classes use the `new` keyword and require you to override methods explicitly. Lambda expressions use the `->` syntax, which is more compact.
+
+5. **Scope**: Anonymous inner classes have their own scope, which can lead to some confusion when accessing variables from the enclosing class. Lambda expressions share the scope of the enclosing class, making it easier to work with variables and methods from the enclosing context.
+
+6. **'this' Reference**: In an anonymous inner class, the `this` keyword refers to the instance of the anonymous class itself. In a lambda expression, `this` refers to the instance of the enclosing class, maintaining consistency with the surrounding code.
+
+## \*. Explain final. finally and finalize difference.
+
+In Java, `final`, `finally`, and `finalize` are distinct concepts with different purposes. Here's a detailed explanation of each, along with their differences:
+
+### `final`
+
+The `final` keyword is a modifier that can be applied to variables, methods, and classes.
+
+- **Final Variable**: A final variable's value cannot be changed once it is initialized. This makes it a constant.
+
+  ```java
+  final int MAX_VALUE = 100;
+  // MAX_VALUE = 200; // This will cause a compilation error
+  ```
+
+- **Final Method**: A final method cannot be overridden by subclasses. This is useful to prevent altering the intended behavior of a method.
+
+  ```java
+  public class Parent {
+      public final void display() {
+          System.out.println("Parent display");
+      }
+  }
+
+  public class Child extends Parent {
+      // public void display() {
+      //     System.out.println("Child display");
+      // } // This will cause a compilation error
+  }
+  ```
+
+- **Final Class**: A final class cannot be subclassed. This is used to prevent inheritance.
+
+  ```java
+  public final class FinalClass {
+      // Class content
+  }
+
+  // public class SubClass extends FinalClass {
+  //     // This will cause a compilation error
+  // }
+  ```
+
+### `finally`
+
+The `finally` block is used in conjunction with `try` and `catch` blocks to ensure that a block of code executes whether or not an exception is thrown. It is typically used for cleanup activities, such as closing files or releasing resources.
+
+- **Finally Block**: Ensures that the specified code runs regardless of whether an exception occurs.
+  ```java
+  try {
+      // Code that may throw an exception
+  } catch (Exception e) {
+      // Exception handling code
+  } finally {
+      // Code that will always execute
+  }
+  ```
+
+### `finalize`
+
+The `finalize` method is a protected method of the `Object` class that can be overridden to perform cleanup operations before an object is garbage collected. However, its use is generally discouraged in modern Java programming because it is unpredictable and inefficient.
+
+- **Finalize Method**: Used for cleanup before garbage collection, but not recommended for most cases.
+  ```java
+  protected void finalize() throws Throwable {
+      try {
+          // Cleanup code
+      } finally {
+          super.finalize();
+      }
+  }
+  ```
+
+### Differences Summary
+
+| Feature              | `final`                                                                                                | `finally`                                          | `finalize`                                                |
+| -------------------- | ------------------------------------------------------------------------------------------------------ | -------------------------------------------------- | --------------------------------------------------------- |
+| **Purpose**          | To define constants, prevent method overriding, and prevent inheritance                                | To execute code regardless of exception occurrence | To perform cleanup operations before garbage collection   |
+| **Usage**            | With variables, methods, and classes                                                                   | With try-catch blocks                              | As a method in a class                                    |
+| **Behavior**         | Cannot change the value of final variables, cannot override final methods, cannot extend final classes | Always executes after try-catch blocks             | Called by the garbage collector before object destruction |
+| **Scope**            | Compile-time constraint                                                                                | Runtime code execution                             | Runtime cleanup before garbage collection                 |
+| **Common Use Cases** | Defining constants, ensuring method behavior, securing class structure                                 | Resource management, cleanup actions               | Rarely used, legacy cleanup operations                    |
+
+### Examples
+
+#### Final Variable Example
+
+```java
+public class FinalVariableExample {
+    public static void main(String[] args) {
+        final int MAX_VALUE = 100;
+        // MAX_VALUE = 200; // Compilation error: cannot assign a value to final variable MAX_VALUE
+    }
+}
+```
+
+#### Finally Block Example
+
+```java
+public class FinallyBlockExample {
+    public static void main(String[] args) {
+        try {
+            int data = 25 / 0; // This will throw an ArithmeticException
+        } catch (ArithmeticException e) {
+            System.out.println("Exception caught: " + e);
+        } finally {
+            System.out.println("Finally block is always executed");
+        }
+    }
+}
+```
+
+#### Finalize Method Example
+
+```java
+public class FinalizeExample {
+    protected void finalize() throws Throwable {
+        try {
+            System.out.println("Finalize method called");
+        } finally {
+            super.finalize();
+        }
+    }
+
+    public static void main(String[] args) {
+        FinalizeExample obj = new FinalizeExample();
+        obj = null;
+        System.gc(); // Requesting JVM to call garbage collector
+    }
+}
+```
+
+## \*. Explain static keyword in JAVA.
+
+The `static` keyword in Java is used for memory management primarily. It can be applied to variables, methods, blocks, and nested classes. The `static` keyword indicates that the member belongs to the class itself rather than to any specific instance of the class. This means that a static member is shared across all instances of the class.
+
+### Static Variables
+
+A static variable is shared among all instances of the class. Only one copy of a static variable exists, regardless of the number of instances.
+
+#### Example of Static Variable
+
+```java
+public class StaticVariableExample {
+    static int counter = 0;
+
+    public StaticVariableExample() {
+        counter++;
+    }
+
+    public static void main(String[] args) {
+        StaticVariableExample obj1 = new StaticVariableExample();
+        StaticVariableExample obj2 = new StaticVariableExample();
+        StaticVariableExample obj3 = new StaticVariableExample();
+
+        System.out.println("Counter: " + StaticVariableExample.counter); // Output: Counter: 3
+    }
+}
+```
+
+### Static Methods
+
+A static method belongs to the class rather than an instance of the class. It can be called without creating an instance of the class. Static methods can only directly access other static members (variables and methods).
+
+#### Example of Static Method
+
+```java
+public class StaticMethodExample {
+    static void staticMethod() {
+        System.out.println("This is a static method.");
+    }
+
+    public static void main(String[] args) {
+        StaticMethodExample.staticMethod(); // No need to create an instance
+    }
+}
+```
+
+### Static Blocks
+
+A static block is used for static initialization of a class. This code inside the static block is executed only once when the class is loaded into memory.
+
+#### Example of Static Block
+
+```java
+public class StaticBlockExample {
+    static int staticValue;
+
+    static {
+        staticValue = 10;
+        System.out.println("Static block executed. Static value: " + staticValue);
+    }
+
+    public static void main(String[] args) {
+        System.out.println("Main method executed. Static value: " + StaticBlockExample.staticValue);
+    }
+}
+```
+
+### Static Nested Classes
+
+A static nested class is a static class defined inside another class. It can access all static members of the outer class, but it cannot access non-static members.
+
+#### Example of Static Nested Class
+
+```java
+public class OuterClass {
+    static int outerStaticValue = 100;
+
+    static class StaticNestedClass {
+        void display() {
+            System.out.println("Static value from outer class: " + outerStaticValue);
+        }
+    }
+
+    public static void main(String[] args) {
+        OuterClass.StaticNestedClass nestedObject = new OuterClass.StaticNestedClass();
+        nestedObject.display();
+    }
+}
+```
+
+### Key Points
+
+1. **Static Variables**: Shared among all instances of the class. Only one copy exists.
+2. **Static Methods**: Belong to the class and can be called without an instance. Can only access static variables and methods directly.
+3. **Static Blocks**: Used for initializing static variables. Executed once when the class is loaded.
+4. **Static Nested Classes**: Can access static members of the outer class but not non-static members.
+
+### Summary
+
+- The `static` keyword is used for memory management and to create class-level members.
+- Static members (variables, methods, blocks, and nested classes) are associated with the class rather than instances.
+- Static variables and methods can be accessed without creating an instance of the class.
+- Static blocks are executed once when the class is loaded.
+- Static nested classes can interact with static members of the outer class but require an instance to access non-static members.
