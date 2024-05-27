@@ -2422,7 +2422,7 @@ In this approach:
 
 This approach minimizes the overhead of synchronization by avoiding unnecessary locking once the instance has been initialized.
 
-### Are Enums Singleton in Java?
+### \*. Are Enums Singleton in Java?
 
 Yes, Enums are inherently Singleton in Java. When you define an enum in Java, the enum constants are implicitly static final instances of the enum type. This means that each enum constant is a Singleton instance of its enum type, and only one instance of each enum constant exists in memory throughout the lifetime of the program.
 
@@ -2440,6 +2440,185 @@ public enum SingletonEnum {
 ```
 
 In this example, `INSTANCE` is a Singleton instance of the `SingletonEnum` enum type, and it is the only instance that exists throughout the program's execution. You can access this Singleton instance using `SingletonEnum.INSTANCE` from anywhere in the program.
+
+## \*. How would you implement the Producer-Consumer pattern in Java using both wait/notify and BlockingQueue?
+
+The Producer-Consumer pattern is a classic example of a multi-threaded design pattern where producers generate data and place it into a shared resource (buffer), and consumers take the data from the buffer and process it. In Java, this can be implemented using two different approaches: wait/notify and `BlockingQueue`.
+
+### Implementation Using `wait`/`notify`
+
+#### Step-by-Step Process
+
+1. **Shared Buffer**: A shared buffer where producers put data and consumers take data.
+2. **Producer**: Produces data and puts it into the buffer.
+3. **Consumer**: Takes data from the buffer and processes it.
+4. **Synchronization**: Use `synchronized`, `wait()`, and `notify()` to manage access to the buffer.
+
+#### Code Example
+
+```java
+import java.util.LinkedList;
+import java.util.Queue;
+
+class SharedBuffer {
+    private final Queue<Integer> buffer = new LinkedList<>();
+    private final int capacity;
+
+    public SharedBuffer(int capacity) {
+        this.capacity = capacity;
+    }
+
+    public synchronized void produce(int value) throws InterruptedException {
+        while (buffer.size() == capacity) {
+            wait();
+        }
+        buffer.add(value);
+        notifyAll(); // Notify consumers
+    }
+
+    public synchronized int consume() throws InterruptedException {
+        while (buffer.isEmpty()) {
+            wait();
+        }
+        int value = buffer.poll();
+        notifyAll(); // Notify producers
+        return value;
+    }
+}
+
+class Producer implements Runnable {
+    private final SharedBuffer buffer;
+
+    public Producer(SharedBuffer buffer) {
+        this.buffer = buffer;
+    }
+
+    @Override
+    public void run() {
+        int value = 0;
+        while (true) {
+            try {
+                buffer.produce(value);
+                System.out.println("Produced: " + value);
+                value++;
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+
+class Consumer implements Runnable {
+    private final SharedBuffer buffer;
+
+    public Consumer(SharedBuffer buffer) {
+        this.buffer = buffer;
+    }
+
+    @Override
+    public void run() {
+        while (true) {
+            try {
+                int value = buffer.consume();
+                System.out.println("Consumed: " + value);
+                Thread.sleep(150);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+
+public class ProducerConsumerWaitNotify {
+    public static void main(String[] args) {
+        SharedBuffer buffer = new SharedBuffer(10);
+        Thread producerThread = new Thread(new Producer(buffer));
+        Thread consumerThread = new Thread(new Consumer(buffer));
+
+        producerThread.start();
+        consumerThread.start();
+    }
+}
+```
+
+### Implementation Using `BlockingQueue`
+
+#### Step-by-Step Process
+
+1. **Shared Buffer**: Use a `BlockingQueue` from the `java.util.concurrent` package.
+2. **Producer**: Produces data and puts it into the `BlockingQueue`.
+3. **Consumer**: Takes data from the `BlockingQueue` and processes it.
+4. **Synchronization**: `BlockingQueue` handles the synchronization internally.
+
+#### Code Example
+
+```java
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+
+class Producer implements Runnable {
+    private final BlockingQueue<Integer> queue;
+
+    public Producer(BlockingQueue<Integer> queue) {
+        this.queue = queue;
+    }
+
+    @Override
+    public void run() {
+        int value = 0;
+        while (true) {
+            try {
+                queue.put(value);
+                System.out.println("Produced: " + value);
+                value++;
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+
+class Consumer implements Runnable {
+    private final BlockingQueue<Integer> queue;
+
+    public Consumer(BlockingQueue<Integer> queue) {
+        this.queue = queue;
+    }
+
+    @Override
+    public void run() {
+        while (true) {
+            try {
+                int value = queue.take();
+                System.out.println("Consumed: " + value);
+                Thread.sleep(150);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+
+public class ProducerConsumerBlockingQueue {
+    public static void main(String[] args) {
+        BlockingQueue<Integer> queue = new ArrayBlockingQueue<>(10);
+        Thread producerThread = new Thread(new Producer(queue));
+        Thread consumerThread = new Thread(new Consumer(queue));
+
+        producerThread.start();
+        consumerThread.start();
+    }
+}
+```
+
+### Summary
+
+- **Wait/Notify Approach**: Requires manual handling of synchronization using `synchronized`, `wait()`, and `notify()`. It's more complex and error-prone.
+- **BlockingQueue Approach**: Simplifies the implementation by using `BlockingQueue` which handles the synchronization internally, making the code easier to read and maintain.
+
+Both approaches demonstrate the Producer-Consumer pattern, but using `BlockingQueue` is generally recommended for its simplicity and robustness.
 
 ## \*. Could you elaborate on FutureTask and Callable interfaces in Java, and how they relate to concurrency?
 
@@ -2611,30 +2790,1434 @@ In this example, the `waitForFlag()` method waits until the `flag` is set to `tr
 
 ## \*. Differentiate between concurrency and parallelism in Java.
 
+Concurrency and parallelism are two related but distinct concepts in programming, especially when dealing with multi-threaded applications in Java.
+
+### Concurrency
+
+Concurrency is about dealing with multiple tasks at the same time but not necessarily executing them simultaneously. It allows multiple tasks to make progress by sharing time slices of CPU resources. In Java, concurrency can be achieved using threads or the Executor framework.
+
+### Parallelism
+
+Parallelism, on the other hand, is about executing multiple tasks simultaneously, leveraging multiple CPU cores. It involves actual simultaneous execution of tasks on different processors or cores.
+
+### Example: Concurrency in Java
+
+Here's a simple example demonstrating concurrency using threads:
+
+```java
+class Task1 extends Thread {
+    public void run() {
+        for (int i = 0; i < 5; i++) {
+            System.out.println("Task 1 - Count: " + i);
+            try {
+                Thread.sleep(100); // Sleep to simulate task delay
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+
+class Task2 extends Thread {
+    public void run() {
+        for (int i = 0; i < 5; i++) {
+            System.out.println("Task 2 - Count: " + i);
+            try {
+                Thread.sleep(100); // Sleep to simulate task delay
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+
+public class ConcurrencyExample {
+    public static void main(String[] args) {
+        Task1 t1 = new Task1();
+        Task2 t2 = new Task2();
+        t1.start();
+        t2.start();
+    }
+}
+```
+
+In this example, `Task1` and `Task2` are run concurrently. The output will show interleaved prints from both tasks, indicating that they are sharing CPU time.
+
+### Example: Parallelism in Java
+
+Here's an example demonstrating parallelism using the `ForkJoinPool`:
+
+```java
+import java.util.concurrent.RecursiveAction;
+import java.util.concurrent.ForkJoinPool;
+
+class ParallelTask extends RecursiveAction {
+    private int start;
+    private int end;
+    private static final int THRESHOLD = 10;
+
+    public ParallelTask(int start, int end) {
+        this.start = start;
+        this.end = end;
+    }
+
+    @Override
+    protected void compute() {
+        if (end - start <= THRESHOLD) {
+            for (int i = start; i < end; i++) {
+                System.out.println(Thread.currentThread().getName() + " - Count: " + i);
+            }
+        } else {
+            int middle = (start + end) / 2;
+            ParallelTask task1 = new ParallelTask(start, middle);
+            ParallelTask task2 = new ParallelTask(middle, end);
+            invokeAll(task1, task2);
+        }
+    }
+}
+
+public class ParallelismExample {
+    public static void main(String[] args) {
+        ForkJoinPool pool = new ForkJoinPool();
+        ParallelTask task = new ParallelTask(0, 100);
+        pool.invoke(task);
+    }
+}
+```
+
+In this example, `ParallelTask` divides the work into smaller tasks that can be processed in parallel. The `ForkJoinPool` splits tasks and assigns them to different threads, achieving parallel execution. You will see the output from different threads working on the tasks simultaneously.
+
+### Summary
+
+- **Concurrency**: Multiple tasks progress concurrently by sharing CPU time, not necessarily simultaneously. Achieved using `Thread`, `Runnable`, or `ExecutorService`.
+- **Parallelism**: Multiple tasks are executed simultaneously, leveraging multiple CPU cores. Achieved using `ForkJoinPool`, `parallelStream()`, or other parallel processing frameworks.
+
+Both concurrency and parallelism aim to make programs more efficient, but they do so in different ways and are suitable for different types of problems.
+
 ## \*. Provide examples of IllegalStateException and NoSuchElementException in Java, and when they might occur.
 
-## \*. How would you implement the Producer-Consumer pattern in Java using both wait/notify and BlockingQueue?
+### IllegalStateException in Java
 
-## \*. Why can constructors be created in abstract classes but not initialized? Explain the reasoning behind this.
+`IllegalStateException` is thrown to indicate that a method has been invoked at an illegal or inappropriate time. In other words, the Java environment or Java application is not in an appropriate state for the requested operation.
 
-## \*. How can you create custom exceptions in Java? Provide a brief overview of the process.
+#### Example 1: Calling `next()` on an Iterator without checking `hasNext()`
+
+```java
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+public class IllegalStateExceptionExample {
+    public static void main(String[] args) {
+        List<String> list = new ArrayList<>();
+        list.add("A");
+        list.add("B");
+        list.add("C");
+
+        Iterator<String> iterator = list.iterator();
+
+        while (iterator.hasNext()) {
+            System.out.println(iterator.next());
+            iterator.remove(); // Works fine here
+        }
+
+        // Attempt to remove again without calling next()
+        iterator.remove(); // This will throw IllegalStateException
+    }
+}
+```
+
+In this example, calling `iterator.remove()` after the iteration has finished throws an `IllegalStateException` because `next()` has not been called since the last `remove()`.
+
+#### Example 2: Calling `submit()` on an `ExecutorService` after it has been shutdown
+
+```java
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+public class IllegalStateExceptionExample2 {
+    public static void main(String[] args) {
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService.submit(() -> System.out.println("Task 1"));
+        executorService.shutdown();
+
+        // Attempting to submit another task after shutdown
+        executorService.submit(() -> System.out.println("Task 2")); // This will throw IllegalStateException
+    }
+}
+```
+
+Here, calling `submit()` on the `ExecutorService` after it has been shut down results in an `IllegalStateException` because the executor is no longer in a state to accept new tasks.
+
+### NoSuchElementException in Java
+
+`NoSuchElementException` is thrown to indicate that the requested element does not exist. This typically occurs when one tries to access an element that is not present.
+
+#### Example 1: Calling `next()` on an Iterator when there are no more elements
+
+```java
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+public class NoSuchElementExceptionExample {
+    public static void main(String[] args) {
+        List<String> list = new ArrayList<>();
+        list.add("A");
+        list.add("B");
+        list.add("C");
+
+        Iterator<String> iterator = list.iterator();
+
+        while (iterator.hasNext()) {
+            System.out.println(iterator.next());
+        }
+
+        // Attempt to call next() when no more elements are present
+        System.out.println(iterator.next()); // This will throw NoSuchElementException
+    }
+}
+```
+
+In this example, calling `iterator.next()` after all elements have been iterated over throws a `NoSuchElementException`.
+
+#### Example 2: Calling `element()` on an empty Queue
+
+```java
+import java.util.LinkedList;
+import java.util.Queue;
+
+public class NoSuchElementExceptionExample2 {
+    public static void main(String[] args) {
+        Queue<String> queue = new LinkedList<>();
+
+        // Attempt to retrieve the head of the queue when it's empty
+        System.out.println(queue.element()); // This will throw NoSuchElementException
+    }
+}
+```
+
+Here, calling `queue.element()` on an empty queue results in a `NoSuchElementException` because there are no elements to return.
+
+### Summary
+
+- **IllegalStateException**: Thrown when a method has been invoked at an inappropriate or illegal time. Examples include calling `remove()` on an iterator without first calling `next()`, or submitting a task to an executor that has been shut down.
+- **NoSuchElementException**: Thrown when trying to access an element that does not exist. Examples include calling `next()` on an iterator with no more elements, or calling `element()` on an empty queue.
 
 ## \*. Explain the differences between ClassNotFoundException and NoClassDefFoundError exceptions in Java.
 
+In Java, both `ClassNotFoundException` and `NoClassDefFoundError` relate to issues with class loading, but they occur in different scenarios and have different implications. Here are the key differences between these two exceptions:
+
+### ClassNotFoundException
+
+- **Type**: Checked Exception
+- **When it occurs**: This exception is thrown when an application tries to load a class at runtime using methods like `Class.forName()`, `ClassLoader.loadClass()`, or `ClassLoader.findSystemClass()`, but the class with the specified name could not be found in the classpath.
+- **Handling**: Since it is a checked exception, it must be either caught or declared in the method's `throws` clause.
+- **Common Scenario**: Often occurs in situations involving dynamic class loading, such as loading JDBC drivers, or using reflection.
+
+#### Example
+
+```java
+public class ClassNotFoundExceptionExample {
+    public static void main(String[] args) {
+        try {
+            // Attempting to load a class dynamically
+            Class.forName("com.example.NonExistentClass");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            System.out.println("ClassNotFoundException caught: Class not found in the classpath.");
+        }
+    }
+}
+```
+
+In this example, `Class.forName("com.example.NonExistentClass")` tries to load a class named `NonExistentClass` which does not exist, resulting in a `ClassNotFoundException`.
+
+### NoClassDefFoundError
+
+- **Type**: Error (specifically, a subclass of `LinkageError`)
+- **When it occurs**: This error is thrown when the Java Virtual Machine (JVM) or a classloader tries to load the definition of a class that was present at compile time but is not found at runtime. Unlike `ClassNotFoundException`, this occurs when the class was successfully compiled but cannot be found when needed during the execution.
+- **Handling**: As an error, it indicates a serious problem that a reasonable application should not try to catch. However, it can still be caught using a catch block for `Error`.
+- **Common Scenario**: Often occurs if there is a mismatch in the environment between compile time and runtime, such as missing JAR files, classpath issues, or if a dependent class is not available at runtime.
+
+#### Example
+
+```java
+public class NoClassDefFoundErrorExample {
+    public static void main(String[] args) {
+        try {
+            MissingClass mc = new MissingClass(); // MissingClass was present at compile time but not at runtime
+        } catch (NoClassDefFoundError e) {
+            e.printStackTrace();
+            System.out.println("NoClassDefFoundError caught: Class definition not found at runtime.");
+        }
+    }
+}
+
+class MissingClass {
+    // This class might be removed or its JAR might be missing at runtime
+}
+```
+
+In this example, `MissingClass` was available at compile time, but if it is missing at runtime (e.g., due to a missing JAR file), it will result in a `NoClassDefFoundError`.
+
+### Summary of Differences
+
+- **Type**: `ClassNotFoundException` is a checked exception; `NoClassDefFoundError` is an error.
+- **When it occurs**:
+  - `ClassNotFoundException`: Thrown when a class is explicitly loaded at runtime but not found.
+  - `NoClassDefFoundError`: Thrown when a class was available at compile time but cannot be found at runtime.
+- **Handling**: `ClassNotFoundException` must be caught or declared, while `NoClassDefFoundError` generally indicates a serious issue that might not be practical to handle.
+- **Common Scenario**: `ClassNotFoundException` is common in dynamic class loading situations; `NoClassDefFoundError` is common in cases where there are classpath or deployment issues leading to missing classes at runtime.
+
+## \*. How can you create custom exceptions in Java? Provide a brief overview of the process.
+
+Creating custom exceptions in Java involves defining a new class that extends one of the existing exception classes, typically `Exception` for checked exceptions or `RuntimeException` for unchecked exceptions. Here’s a brief overview of the process:
+
+1. **Define the custom exception class**: Extend the appropriate exception class (`Exception` or `RuntimeException`).
+2. **Add constructors**: Provide constructors that allow for different ways of initializing the exception (e.g., with a message, with a message and a cause).
+3. **Optionally, add custom methods or fields**: If you need to store additional information or provide extra functionality specific to your exception.
+
+### Example: Creating a Custom Checked Exception
+
+#### Step-by-Step Process
+
+1. **Define the Custom Exception Class**
+   - Extend the `Exception` class.
+   - Provide constructors for different initialization scenarios.
+
+```java
+public class CustomCheckedException extends Exception {
+    // Default constructor
+    public CustomCheckedException() {
+        super();
+    }
+
+    // Constructor that accepts a message
+    public CustomCheckedException(String message) {
+        super(message);
+    }
+
+    // Constructor that accepts a message and a cause
+    public CustomCheckedException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    // Constructor that accepts a cause
+    public CustomCheckedException(Throwable cause) {
+        super(cause);
+    }
+}
+```
+
+2. **Using the Custom Checked Exception in Code**
+   - This exception needs to be declared in the method's `throws` clause or handled with a try-catch block.
+
+```java
+public class CustomCheckedExceptionDemo {
+    public static void main(String[] args) {
+        try {
+            performOperation();
+        } catch (CustomCheckedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void performOperation() throws CustomCheckedException {
+        // Simulating an error condition
+        boolean errorOccurred = true;
+        if (errorOccurred) {
+            throw new CustomCheckedException("An error occurred in performOperation");
+        }
+    }
+}
+```
+
+### Example: Creating a Custom Unchecked Exception
+
+#### Step-by-Step Process
+
+1. **Define the Custom Exception Class**
+   - Extend the `RuntimeException` class.
+   - Provide constructors for different initialization scenarios.
+
+```java
+public class CustomUncheckedException extends RuntimeException {
+    // Default constructor
+    public CustomUncheckedException() {
+        super();
+    }
+
+    // Constructor that accepts a message
+    public CustomUncheckedException(String message) {
+        super(message);
+    }
+
+    // Constructor that accepts a message and a cause
+    public CustomUncheckedException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    // Constructor that accepts a cause
+    public CustomUncheckedException(Throwable cause) {
+        super(cause);
+    }
+}
+```
+
+2. **Using the Custom Unchecked Exception in Code**
+   - This exception does not need to be declared in the method's `throws` clause. It can be thrown directly.
+
+```java
+public class CustomUncheckedExceptionDemo {
+    public static void main(String[] args) {
+        try {
+            performAnotherOperation();
+        } catch (CustomUncheckedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void performAnotherOperation() {
+        // Simulating an error condition
+        boolean errorOccurred = true;
+        if (errorOccurred) {
+            throw new CustomUncheckedException("An error occurred in performAnotherOperation");
+        }
+    }
+}
+```
+
+### Summary
+
+- **Checked Exception**: Extend `Exception`. Must be declared or caught.
+- **Unchecked Exception**: Extend `RuntimeException`. No need to declare.
+- **Constructors**: Provide constructors for different scenarios (message, cause).
+- **Usage**: Throw the custom exception where needed in the code. For checked exceptions, handle or declare them; for unchecked exceptions, you can directly throw them.
+
+## \*. Why can constructors be created in abstract classes but not initialized? Explain the reasoning behind this.
+
+In Java, abstract classes can have constructors, but they cannot be instantiated directly. This may seem counterintuitive at first, but there are valid reasons for this design:
+
+### Why Constructors in Abstract Classes?
+
+1. **Initialization of Fields**: Abstract classes can have fields, and these fields may need initialization. Constructors in abstract classes allow for the initialization of these fields.
+2. **Super Constructor Calls**: When a concrete subclass is instantiated, the constructor of the abstract superclass is called (using `super()`) to ensure proper initialization.
+3. **Common Initialization Code**: Abstract classes can contain common setup code in their constructors that can be reused by subclasses.
+
+### Why Abstract Classes Cannot Be Instantiated?
+
+1. **Incomplete Implementation**: Abstract classes often contain abstract methods (methods without an implementation) that must be implemented by subclasses. Instantiating an abstract class directly would be problematic because it would result in an object with unimplemented methods.
+2. **Design Intent**: Abstract classes are designed to be extended, not used directly. They serve as a blueprint for other classes, providing a common base of functionality and ensuring a certain contract (via abstract methods) that subclasses must fulfill.
+
+### Code Example
+
+Consider the following example that illustrates these concepts:
+
+#### Abstract Class with a Constructor
+
+```java
+abstract class Animal {
+    protected String name;
+
+    // Constructor in abstract class
+    public Animal(String name) {
+        this.name = name;
+    }
+
+    // Abstract method (must be implemented by subclasses)
+    public abstract void makeSound();
+
+    // Concrete method
+    public void sleep() {
+        System.out.println(name + " is sleeping.");
+    }
+}
+
+class Dog extends Animal {
+    public Dog(String name) {
+        super(name); // Call the constructor of the abstract class
+    }
+
+    @Override
+    public void makeSound() {
+        System.out.println(name + " says: Woof!");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        // Animal animal = new Animal("Generic Animal"); // This line would cause a compile-time error
+
+        Dog dog = new Dog("Buddy");
+        dog.makeSound();
+        dog.sleep();
+    }
+}
+```
+
+### Explanation
+
+1. **Abstract Class `Animal`**: Contains a constructor that initializes the `name` field and defines an abstract method `makeSound()`.
+2. **Concrete Subclass `Dog`**: Extends `Animal`, calls the `super(name)` constructor to initialize the `name` field, and provides an implementation for the `makeSound()` method.
+3. **Instantiation**: The `Animal` class cannot be instantiated directly because it is abstract:
+
+   ```java
+   // Animal animal = new Animal("Generic Animal"); // Compile-time error
+   ```
+
+   However, the `Dog` class, which is a concrete subclass, can be instantiated:
+
+   ```java
+   Dog dog = new Dog("Buddy");
+   ```
+
+4. **Constructor Call**: When a `Dog` object is created, the `Dog` constructor calls the `Animal` constructor using `super(name)`. This ensures that the `name` field is properly initialized, demonstrating the utility of constructors in abstract classes.
+
+### Summary
+
+- **Constructors in Abstract Classes**: Allow for the initialization of fields and ensure proper setup through inheritance.
+- **Cannot Instantiate Abstract Classes**: Prevents creating objects with unimplemented methods and aligns with the design intent of using abstract classes as blueprints for subclasses.
+
+By understanding these principles, we can see how constructors in abstract classes facilitate proper initialization while maintaining the integrity and purpose of abstract classes in the object-oriented design.
+
 ## \*. {Concurrency, Parallelism, Threads (Multithreading) (java)}, Processes, Async, and Sync?
+
+To understand these concepts, let's define each one briefly and provide relevant Java code examples where applicable:
+
+1. **Concurrency**: Concurrency is the ability of a program to deal with multiple tasks at once. It does not necessarily mean that these tasks are executed simultaneously but rather that they make progress without waiting for each other to complete.
+
+2. **Parallelism**: Parallelism is the simultaneous execution of multiple tasks, typically utilizing multiple CPU cores.
+
+3. **Threads (Multithreading)**: A thread is a single path of execution within a process. Multithreading involves multiple threads running concurrently within the same process, sharing resources.
+
+4. **Processes**: A process is an independent program running on a computer. Each process has its own memory space.
+
+5. **Async (Asynchronous)**: Asynchronous operations allow tasks to run independently of the main program flow, with completion signaled through callbacks, futures, or other mechanisms.
+
+6. **Sync (Synchronous)**: Synchronous operations run sequentially, with each step waiting for the previous one to complete.
+
+### Java Code Examples
+
+#### Concurrency with Threads (Multithreading)
+
+```java
+class Task extends Thread {
+    private String taskName;
+
+    public Task(String taskName) {
+        this.taskName = taskName;
+    }
+
+    @Override
+    public void run() {
+        for (int i = 0; i < 5; i++) {
+            System.out.println(taskName + " - Count: " + i);
+            try {
+                Thread.sleep(100); // Sleep to simulate some work
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+
+public class ConcurrencyExample {
+    public static void main(String[] args) {
+        Task t1 = new Task("Task 1");
+        Task t2 = new Task("Task 2");
+
+        t1.start(); // Start Task 1
+        t2.start(); // Start Task 2
+    }
+}
+```
+
+#### Parallelism with `ForkJoinPool`
+
+```java
+import java.util.concurrent.RecursiveAction;
+import java.util.concurrent.ForkJoinPool;
+
+class ParallelTask extends RecursiveAction {
+    private int start;
+    private int end;
+    private static final int THRESHOLD = 10;
+
+    public ParallelTask(int start, int end) {
+        this.start = start;
+        this.end = end;
+    }
+
+    @Override
+    protected void compute() {
+        if (end - start <= THRESHOLD) {
+            for (int i = start; i < end; i++) {
+                System.out.println(Thread.currentThread().getName() + " - Count: " + i);
+            }
+        } else {
+            int middle = (start + end) / 2;
+            ParallelTask task1 = new ParallelTask(start, middle);
+            ParallelTask task2 = new ParallelTask(middle, end);
+            invokeAll(task1, task2);
+        }
+    }
+}
+
+public class ParallelismExample {
+    public static void main(String[] args) {
+        ForkJoinPool pool = new ForkJoinPool();
+        ParallelTask task = new ParallelTask(0, 100);
+        pool.invoke(task);
+    }
+}
+```
+
+#### Asynchronous Execution with `CompletableFuture`
+
+```java
+import java.util.concurrent.CompletableFuture;
+
+public class AsyncExample {
+    public static void main(String[] args) {
+        CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
+            for (int i = 0; i < 5; i++) {
+                System.out.println("Async Task - Count: " + i);
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        System.out.println("Main thread continues...");
+        future.join(); // Wait for the async task to complete
+    }
+}
+```
+
+#### Synchronous Execution
+
+```java
+public class SyncExample {
+    public static void main(String[] args) {
+        performTask();
+        System.out.println("Main thread continues...");
+    }
+
+    public static void performTask() {
+        for (int i = 0; i < 5; i++) {
+            System.out.println("Sync Task - Count: " + i);
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+```
+
+#### Using Processes in Java
+
+```java
+import java.io.IOException;
+
+public class ProcessExample {
+    public static void main(String[] args) {
+        try {
+            Process process = new ProcessBuilder("notepad.exe").start(); // Starts a new process (e.g., Notepad)
+            process.waitFor(); // Wait for the process to complete
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+### Summary
+
+- **Concurrency**: Multiple tasks make progress simultaneously, not necessarily executed at the same time. Demonstrated with threads.
+- **Parallelism**: Tasks are executed simultaneously using multiple cores. Demonstrated with `ForkJoinPool`.
+- **Threads (Multithreading)**: Multiple threads within a process running concurrently.
+- **Processes**: Independent programs running on the system, each with its own memory space.
+- **Async**: Tasks run independently of the main program flow, demonstrated with `CompletableFuture`.
+- **Sync**: Tasks run sequentially, one after the other, demonstrated with a simple method call.
 
 ## \*. How does hashing work in Java HashMap? Provide an overview of the process.
 
-## \*. Compare and contrast ArrayList with LinkedList in Java, highlighting their differences.
+### Overview of Hashing in Java `HashMap`
 
-## \*. Discuss the distinctions between ArrayList and HashMap in Java.
+Hashing is a technique used to convert an input (or a key) into a fixed-size value, which is usually a number that serves as an index for storing and retrieving values in a data structure, such as a `HashMap`.
 
-## \*. What are the differences between TreeSet and HashSet in Java, and when would you use each?
+### How Hashing Works in `HashMap`
 
-## \*. Compare Vector and ArrayList in Java, considering their features and use cases.
+1. **Hash Code Calculation**: When a key-value pair is inserted into a `HashMap`, the key's `hashCode()` method is called to compute an integer hash code. This hash code is then used to determine the bucket location where the entry will be stored.
 
-## \*. What is Record In Java?
+2. **Bucket Index Calculation**: The hash code is then transformed into a bucket index using a formula, typically `index = (n - 1) & hash`, where `n` is the number of buckets. This ensures that the index is within the array bounds.
 
-## \*. Map vs. flatMap in Stream API.
+3. **Collision Handling**: If two keys hash to the same bucket index, a collision occurs. Java `HashMap` handles collisions using a linked list or a balanced tree (for buckets with many entries) within each bucket.
 
-## \*. Explore the features introduced in Java 8 such as Function Interface, Method Reference, Streams, lambda function and Collections.
+4. **Entry Storage**: Each bucket contains a linked list (or tree) of `Map.Entry` objects. A `Map.Entry` object stores the key, value, and a reference to the next entry in the list.
+
+5. **Retrieval**: To retrieve a value, the key's hash code is computed, the bucket index is determined, and the bucket is searched sequentially (or through the tree) to find the key.
+
+### Code Example
+
+Here is a simple example demonstrating how hashing works internally in a `HashMap`.
+
+#### Simplified HashMap Implementation
+
+```java
+import java.util.Objects;
+
+class SimpleHashMap<K, V> {
+    static class Entry<K, V> {
+        final K key;
+        V value;
+        Entry<K, V> next;
+
+        public Entry(K key, V value, Entry<K, V> next) {
+            this.key = key;
+            this.value = value;
+            this.next = next;
+        }
+    }
+
+    private Entry<K, V>[] table;
+    private static final int INITIAL_CAPACITY = 16;
+
+    @SuppressWarnings("unchecked")
+    public SimpleHashMap() {
+        table = new Entry[INITIAL_CAPACITY];
+    }
+
+    private int hash(K key) {
+        return Objects.hashCode(key) & (table.length - 1);
+    }
+
+    public void put(K key, V value) {
+        int hash = hash(key);
+        Entry<K, V> newEntry = new Entry<>(key, value, null);
+
+        if (table[hash] == null) {
+            table[hash] = newEntry;
+        } else {
+            Entry<K, V> current = table[hash];
+            while (current != null) {
+                if (current.key.equals(key)) {
+                    current.value = value;
+                    return;
+                }
+                if (current.next == null) {
+                    current.next = newEntry;
+                    return;
+                }
+                current = current.next;
+            }
+        }
+    }
+
+    public V get(K key) {
+        int hash = hash(key);
+        Entry<K, V> current = table[hash];
+        while (current != null) {
+            if (current.key.equals(key)) {
+                return current.value;
+            }
+            current = current.next;
+        }
+        return null;
+    }
+
+    public static void main(String[] args) {
+        SimpleHashMap<String, String> map = new SimpleHashMap<>();
+        map.put("one", "1");
+        map.put("two", "2");
+        map.put("three", "3");
+
+        System.out.println("one: " + map.get("one"));    // Output: 1
+        System.out.println("two: " + map.get("two"));    // Output: 2
+        System.out.println("three: " + map.get("three"));// Output: 3
+    }
+}
+```
+
+### Explanation
+
+1. **Entry Class**: The `Entry` class represents a key-value pair and the next entry in the bucket (linked list).
+2. **Table Initialization**: The `table` is an array of `Entry` objects, initially of size 16.
+3. **Hash Function**: The `hash` method computes the bucket index using the key's hash code and the array length.
+4. **Put Method**: Adds a key-value pair to the map. If the bucket is empty, it inserts the entry. If not, it iterates through the linked list to either update an existing entry or append the new entry.
+5. **Get Method**: Retrieves the value for a given key by computing the hash and searching the linked list in the corresponding bucket.
+
+### Conclusion
+
+Hashing in a `HashMap` involves calculating the hash code of the key, determining the appropriate bucket using that hash code, and handling collisions through linked lists or trees. The simplified `SimpleHashMap` example demonstrates the basic mechanism of how entries are stored and retrieved in a hash map using hashing.
+
+## \*. Compare and contrast ArrayList with LinkedList in Java, highlighting their differences. Give simple code example.
+
+In Java, `ArrayList` and `LinkedList` are two commonly used implementations of the `List` interface, but they have different internal structures and performance characteristics. Here's a comparison of their differences, along with simple code examples.
+
+### ArrayList
+
+#### Characteristics
+
+1. **Internal Structure**: Backed by a dynamically resizing array.
+2. **Access Time**: Fast random access, O(1) for get and set operations.
+3. **Insertion/Deletion**: Slower for insertions and deletions, especially in the middle of the list, O(n) due to shifting elements.
+4. **Memory Usage**: More memory-efficient as it requires less overhead per element compared to `LinkedList`.
+
+#### Use Case
+
+- Best for applications where frequent access to elements is required and insertions/deletions are infrequent.
+
+### LinkedList
+
+#### Characteristics
+
+1. **Internal Structure**: Doubly linked list.
+2. **Access Time**: Slower random access, O(n) for get and set operations as it requires traversal from the beginning or end.
+3. **Insertion/Deletion**: Faster insertions and deletions, O(1) when adding/removing elements from the beginning or end, O(n) for arbitrary positions.
+4. **Memory Usage**: Less memory-efficient due to additional storage required for node pointers.
+
+#### Use Case
+
+- Best for applications where frequent insertions and deletions are required, particularly at the beginning or end of the list.
+
+### Code Examples
+
+#### ArrayList Example
+
+```java
+import java.util.ArrayList;
+import java.util.List;
+
+public class ArrayListExample {
+    public static void main(String[] args) {
+        List<String> arrayList = new ArrayList<>();
+        arrayList.add("Element 1");
+        arrayList.add("Element 2");
+        arrayList.add("Element 3");
+
+        // Accessing elements
+        System.out.println("First Element: " + arrayList.get(0));
+
+        // Iterating over elements
+        System.out.println("ArrayList Elements:");
+        for (String element : arrayList) {
+            System.out.println(element);
+        }
+
+        // Inserting an element
+        arrayList.add(1, "Inserted Element");
+        System.out.println("After insertion: " + arrayList);
+
+        // Removing an element
+        arrayList.remove("Element 2");
+        System.out.println("After removal: " + arrayList);
+    }
+}
+```
+
+#### LinkedList Example
+
+```java
+import java.util.LinkedList;
+import java.util.List;
+
+public class LinkedListExample {
+    public static void main(String[] args) {
+        List<String> linkedList = new LinkedList<>();
+        linkedList.add("Element A");
+        linkedList.add("Element B");
+        linkedList.add("Element C");
+
+        // Accessing elements
+        System.out.println("First Element: " + linkedList.get(0));
+
+        // Iterating over elements
+        System.out.println("LinkedList Elements:");
+        for (String element : linkedList) {
+            System.out.println(element);
+        }
+
+        // Inserting an element
+        linkedList.add(1, "Inserted Element");
+        System.out.println("After insertion: " + linkedList);
+
+        // Removing an element
+        linkedList.remove("Element B");
+        System.out.println("After removal: " + linkedList);
+    }
+}
+```
+
+### Summary of Differences
+
+1. **Internal Structure**: `ArrayList` uses a dynamic array, while `LinkedList` uses a doubly linked list.
+2. **Access Time**: `ArrayList` provides O(1) time complexity for accessing elements, whereas `LinkedList` requires O(n) time.
+3. **Insertion/Deletion**: `ArrayList` has O(n) complexity for insertions/deletions due to shifting elements, while `LinkedList` can perform these operations in O(1) time if the position is known.
+4. **Memory Overhead**: `ArrayList` is more memory-efficient compared to `LinkedList` because it does not store pointers to the next and previous elements.
+
+### Choosing Between ArrayList and LinkedList
+
+- Use `ArrayList` when you need fast random access and infrequent insertions or deletions.
+- Use `LinkedList` when you need to perform frequent insertions and deletions, particularly at the beginning or end of the list.
+
+## \*. Discuss the distinctions between ArrayList and HashMap in Java. Give simple code example.
+
+`ArrayList` and `HashMap` are both popular data structures in Java, but they serve different purposes and have different characteristics. Here's a comparison of their distinctions:
+
+### ArrayList
+
+1. **Purpose**: `ArrayList` is a resizable array implementation of the `List` interface, allowing for dynamic addition and removal of elements.
+2. **Ordered Collection**: Elements in an `ArrayList` are ordered and have indices assigned to them, meaning the order of insertion is preserved.
+3. **Access Time**: Provides fast random access to elements based on their indices (`O(1)` time complexity).
+4. **Duplicate Values**: Allows duplicate elements.
+5. **Iteration**: Supports sequential access via iterators or enhanced for-loops.
+6. **Example Use Case**: Storing and accessing a collection of objects where the order matters, such as maintaining a list of items in a shopping cart.
+
+### HashMap
+
+1. **Purpose**: `HashMap` is an implementation of the `Map` interface, providing key-value pairs for efficient retrieval and storage.
+2. **Unordered Collection**: Elements in a `HashMap` are not ordered. The order of the keys may not be consistent across different runs of the application.
+3. **Access Time**: Provides fast retrieval of values based on keys (`O(1)` average time complexity for `get` and `put` operations).
+4. **Duplicate Values**: Allows duplicate values but not duplicate keys. If a key already exists, its corresponding value is overwritten.
+5. **Iteration**: Supports iteration over key-value pairs, but the order is not guaranteed.
+6. **Example Use Case**: Storing and retrieving data based on unique keys, such as storing user information with their corresponding IDs.
+
+### Code Examples
+
+#### ArrayList Example
+
+```java
+import java.util.ArrayList;
+import java.util.List;
+
+public class ArrayListExample {
+    public static void main(String[] args) {
+        List<String> arrayList = new ArrayList<>();
+
+        // Adding elements
+        arrayList.add("Apple");
+        arrayList.add("Banana");
+        arrayList.add("Orange");
+
+        // Accessing elements by index
+        System.out.println("Element at index 0: " + arrayList.get(0)); // Output: Apple
+
+        // Iterating over elements
+        System.out.println("ArrayList Elements:");
+        for (String element : arrayList) {
+            System.out.println(element);
+        }
+    }
+}
+```
+
+#### HashMap Example
+
+```java
+import java.util.HashMap;
+import java.util.Map;
+
+public class HashMapExample {
+    public static void main(String[] args) {
+        Map<String, Integer> hashMap = new HashMap<>();
+
+        // Adding key-value pairs
+        hashMap.put("Alice", 25);
+        hashMap.put("Bob", 30);
+        hashMap.put("Charlie", 35);
+
+        // Accessing values by key
+        System.out.println("Age of Bob: " + hashMap.get("Bob")); // Output: 30
+
+        // Iterating over key-value pairs
+        System.out.println("HashMap Entries:");
+        for (Map.Entry<String, Integer> entry : hashMap.entrySet()) {
+            System.out.println("Key: " + entry.getKey() + ", Value: " + entry.getValue());
+        }
+    }
+}
+```
+
+### Summary
+
+- `ArrayList` is used for storing ordered collections of objects with fast random access to elements.
+- `HashMap` is used for storing key-value pairs, providing fast retrieval of values based on keys.
+- `ArrayList` maintains insertion order, while `HashMap` does not guarantee any specific order of its elements.
+- Both `ArrayList` and `HashMap` are widely used in Java applications, but they serve different purposes and have different performance characteristics.
+
+## \*. What are the differences between TreeSet and HashSet in Java, and when would you use each? Give simple code example.
+
+| Criteria       | HashSet                                                                                 | TreeSet                                                                       |
+| -------------- | --------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| Ordering       | Unordered                                                                               | Ordered (sorted)                                                              |
+| Implementation | Implemented using a hash table                                                          | Implemented using a red-black tree                                            |
+| Null Elements  | Allows one null element                                                                 | Does not allow null elements                                                  |
+| Duplication    | Does not allow duplicate elements                                                       | Does not allow duplicate elements                                             |
+| Performance    | Generally faster for add, remove, and contains operations                               | Slower for add, remove, and contains operations, but faster for range queries |
+| Use Case       | Best when order is not important and you need fast add, remove, and contains operations | Best when elements need to be ordered or you need range queries               |
+
+### Code Examples
+
+#### HashSet Example
+
+```java
+import java.util.HashSet;
+import java.util.Set;
+
+public class HashSetExample {
+    public static void main(String[] args) {
+        Set<String> hashSet = new HashSet<>();
+
+        // Adding elements
+        hashSet.add("Apple");
+        hashSet.add("Banana");
+        hashSet.add("Orange");
+
+        // Adding a duplicate element
+        hashSet.add("Apple"); // Ignored, as HashSet does not allow duplicates
+
+        // Iterating over elements
+        System.out.println("HashSet Elements:");
+        for (String element : hashSet) {
+            System.out.println(element);
+        }
+    }
+}
+```
+
+#### TreeSet Example
+
+```java
+import java.util.Set;
+import java.util.TreeSet;
+
+public class TreeSetExample {
+    public static void main(String[] args) {
+        Set<String> treeSet = new TreeSet<>();
+
+        // Adding elements
+        treeSet.add("Apple");
+        treeSet.add("Banana");
+        treeSet.add("Orange");
+
+        // Adding a duplicate element
+        treeSet.add("Apple"); // Ignored, as TreeSet does not allow duplicates
+
+        // Iterating over elements
+        System.out.println("TreeSet Elements:");
+        for (String element : treeSet) {
+            System.out.println(element);
+        }
+    }
+}
+```
+
+### Summary
+
+- Use `HashSet` when you need fast add, remove, and contains operations, and order is not important.
+- Use `TreeSet` when you need elements to be ordered (sorted), or you need to perform range queries (e.g., finding elements within a certain range).
+- Avoid using `TreeSet` when dealing with large datasets or when performance is critical, as it can be slower than `HashSet` for basic operations like add, remove, and contains.
+
+## \*. Compare Vector and ArrayList in Java, considering their features and use cases. Give simple code example.
+
+| Criteria        | Vector                                   | ArrayList                                 |
+| --------------- | ---------------------------------------- | ----------------------------------------- |
+| Synchronization | Synchronized                             | Not synchronized                          |
+| Performance     | Slower due to synchronization overhead   | Faster                                    |
+| Growth Strategy | Doubles in size when capacity is reached | Increases by 50% when capacity is reached |
+| Legacy          | Part of the legacy collections framework | Introduced in Java 1.2, more modern       |
+| Use Case        | When thread safety is required           | When thread safety is not a concern       |
+
+### Code Examples
+
+#### Vector Example
+
+```java
+import java.util.Vector;
+
+public class VectorExample {
+    public static void main(String[] args) {
+        Vector<String> vector = new Vector<>();
+
+        // Adding elements
+        vector.add("Apple");
+        vector.add("Banana");
+        vector.add("Orange");
+
+        // Accessing elements by index
+        System.out.println("Element at index 1: " + vector.get(1)); // Output: Banana
+
+        // Iterating over elements
+        System.out.println("Vector Elements:");
+        for (String element : vector) {
+            System.out.println(element);
+        }
+    }
+}
+```
+
+#### ArrayList Example
+
+```java
+import java.util.ArrayList;
+
+public class ArrayListExample {
+    public static void main(String[] args) {
+        ArrayList<String> arrayList = new ArrayList<>();
+
+        // Adding elements
+        arrayList.add("Apple");
+        arrayList.add("Banana");
+        arrayList.add("Orange");
+
+        // Accessing elements by index
+        System.out.println("Element at index 1: " + arrayList.get(1)); // Output: Banana
+
+        // Iterating over elements
+        System.out.println("ArrayList Elements:");
+        for (String element : arrayList) {
+            System.out.println(element);
+        }
+    }
+}
+```
+
+### Summary
+
+- Use `Vector` when thread safety is required, as it is synchronized and ensures safe concurrent access by multiple threads.
+- Use `ArrayList` when thread safety is not a concern and you need better performance, as `ArrayList` is not synchronized and does not incur the overhead of synchronization.
+- Prefer `ArrayList` in modern Java applications, as it provides better performance and flexibility unless explicit synchronization is required.
+
+## \*. What is Record In Java? Give simple code example.
+
+In Java, starting from version 14, records are a new kind of type declaration. They are classes that act primarily as transparent carriers for immutable data, typically modeling data that is simply a group of values. Records provide concise syntax for declaring immutable data-carrying classes.
+
+Here's a simple code example of a record in Java:
+
+```java
+public record Person(String name, int age) {
+    // No need to explicitly declare fields, constructors, equals, hashCode, or toString
+}
+
+public class RecordExample {
+    public static void main(String[] args) {
+        Person person = new Person("Alice", 30);
+        System.out.println(person); // Output: Person[name=Alice, age=30]
+
+        // Records are immutable, so the following will result in a compilation error:
+        // person.age = 31;
+    }
+}
+```
+
+In the above example:
+
+- `Person` is a record declared with two components: `name` and `age`.
+- The record declaration is concise and implicitly creates final fields, a constructor that initializes those fields, `equals()`, `hashCode()`, and `toString()` methods.
+- Records are immutable by default, meaning their state cannot be changed after initialization.
+- An instance of the `Person` record is created with the name "Alice" and age 30.
+- Printing the `person` object results in a string representation that includes the values of its components.
+- Attempting to modify the fields of a record after initialization will result in a compilation error because records are immutable.
+
+## \*. Map vs. flatMap in Stream API in Java with example.
+
+In Java's Stream API, both `map` and `flatMap` are intermediate operations used to transform elements in a stream. However, they differ in their behavior and what they return:
+
+### map
+
+- The `map` operation transforms each element of the stream into another object using the provided function.
+- It returns a new stream consisting of the transformed elements.
+
+### flatMap
+
+- The `flatMap` operation also transforms each element of the stream, but the provided function must return a stream.
+- It flattens the streams returned by the function into a single stream.
+- This is useful when the transformation function can produce multiple elements for each input element.
+
+### Example
+
+Let's consider a scenario where we have a list of strings, and we want to transform each string into a stream of characters and then count the total number of characters.
+
+#### Using map
+
+```java
+import java.util.Arrays;
+import java.util.List;
+
+public class MapVsFlatMapExample {
+    public static void main(String[] args) {
+        List<String> words = Arrays.asList("hello", "world", "java");
+
+        long totalCharacters = words.stream()
+                                    .map(String::chars) // Transform each string into a stream of characters
+                                    .count();           // Count the number of streams (not characters)
+
+        System.out.println("Total characters using map: " + totalCharacters); // Output: 3
+    }
+}
+```
+
+In the above example, the `map` operation transforms each string into a stream of characters (IntStream), resulting in a stream of streams. Then, the `count` operation counts the number of streams, not the total number of characters.
+
+#### Using flatMap
+
+```java
+import java.util.Arrays;
+import java.util.List;
+
+public class MapVsFlatMapExample {
+    public static void main(String[] args) {
+        List<String> words = Arrays.asList("hello", "world", "java");
+
+        long totalCharacters = words.stream()
+                                    .flatMapToInt(String::chars) // Transform each string into a stream of characters and flatten
+                                    .count();                     // Count the total number of characters
+
+        System.out.println("Total characters using flatMap: " + totalCharacters); // Output: 10
+    }
+}
+```
+
+In this example, the `flatMapToInt` operation transforms each string into a stream of characters (IntStream) and then flattens these streams into a single IntStream. Finally, the `count` operation counts the total number of characters in the flattened stream.
+
+### Summary
+
+- Use `map` when each input element needs to be transformed into exactly one output element.
+- Use `flatMap` when the transformation function produces multiple elements for each input element, and you want to flatten these elements into a single stream.
+
+## \*. Explore the features introduced in Java 8 such as Function Interface, Method Reference, Streams (filter, map, reduce, and collect), lambda function and Collections. Give simple code example.
+
+Sure, I'd be happy to provide examples for each feature introduced in Java 8:
+
+### 1. Functional Interface
+
+A functional interface is an interface that contains only one abstract method. It can have any number of default or static methods.
+
+```java
+@FunctionalInterface
+interface MyFunctionalInterface {
+    void myMethod();
+}
+
+public class FunctionalInterfaceExample {
+    public static void main(String[] args) {
+        MyFunctionalInterface functionalInterface = () -> System.out.println("Hello from functional interface");
+        functionalInterface.myMethod();
+    }
+}
+```
+
+### 2. Method Reference
+
+Method references provide a way to refer to methods without invoking them.
+
+```java
+import java.util.function.Supplier;
+
+public class MethodReferenceExample {
+    public static void main(String[] args) {
+        Supplier<Double> randomNumberSupplier = Math::random;
+        System.out.println("Random number: " + randomNumberSupplier.get());
+    }
+}
+```
+
+### 3. Streams
+
+Streams provide a way to process collections of objects in a functional style.
+
+#### a. Filter
+
+Filtering allows you to select elements from a stream based on a predicate.
+
+```java
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class FilterExample {
+    public static void main(String[] args) {
+        List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+        List<Integer> evenNumbers = numbers.stream()
+                                           .filter(n -> n % 2 == 0)
+                                           .collect(Collectors.toList());
+        System.out.println("Even numbers: " + evenNumbers);
+    }
+}
+```
+
+#### b. Map
+
+Mapping allows you to transform each element in a stream using a function.
+
+```java
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class MapExample {
+    public static void main(String[] args) {
+        List<String> words = Arrays.asList("hello", "world", "java");
+        List<Integer> wordLengths = words.stream()
+                                         .map(String::length)
+                                         .collect(Collectors.toList());
+        System.out.println("Word lengths: " + wordLengths);
+    }
+}
+```
+
+#### c. Reduce
+
+Reduction combines all elements of a stream into a single result.
+
+```java
+import java.util.Arrays;
+import java.util.List;
+
+public class ReduceExample {
+    public static void main(String[] args) {
+        List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
+        int sum = numbers.stream().reduce(0, Integer::sum);
+        System.out.println("Sum of numbers: " + sum);
+    }
+}
+```
+
+#### d. Collect
+
+Collecting allows you to accumulate elements into a collection.
+
+```java
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class CollectExample {
+    public static void main(String[] args) {
+        List<String> words = Arrays.asList("hello", "world", "java");
+        String concatenatedString = words.stream()
+                                         .collect(Collectors.joining(", "));
+        System.out.println("Concatenated string: " + concatenatedString);
+    }
+}
+```
+
+### 4. Lambda Functions
+
+Lambda expressions provide a concise way to express instances of single-method interfaces (functional interfaces).
+
+```java
+interface MyInterface {
+    void myMethod();
+}
+
+public class LambdaExample {
+    public static void main(String[] args) {
+        MyInterface myInterface = () -> System.out.println("Hello from lambda");
+        myInterface.myMethod();
+    }
+}
+```
+
+### 5. Collections
+
+Java 8 introduced various enhancements to the Collections framework, including the `forEach` method for iterating over collections.
+
+```java
+import java.util.ArrayList;
+import java.util.List;
+
+public class CollectionsExample {
+    public static void main(String[] args) {
+        List<String> fruits = new ArrayList<>();
+        fruits.add("Apple");
+        fruits.add("Banana");
+        fruits.add("Orange");
+
+        // Iterating using forEach
+        fruits.forEach(System.out::println);
+    }
+}
+```
+
+## \*. List different ways of iterating through in JAVA. Give code example. What are the deciding factors to select on over another.
+
+There are several ways to iterate through collections in Java. Each approach has its own advantages and is suitable for different use cases. Here are some common ways to iterate through collections:
+
+### 1. Traditional for loop
+
+```java
+List<String> list = Arrays.asList("a", "b", "c");
+for (int i = 0; i < list.size(); i++) {
+    String element = list.get(i);
+    System.out.println(element);
+}
+```
+
+### 2. Enhanced for loop (for-each loop)
+
+```java
+List<String> list = Arrays.asList("a", "b", "c");
+for (String element : list) {
+    System.out.println(element);
+}
+```
+
+### 3. Iterator
+
+```java
+List<String> list = Arrays.asList("a", "b", "c");
+Iterator<String> iterator = list.iterator();
+while (iterator.hasNext()) {
+    String element = iterator.next();
+    System.out.println(element);
+}
+```
+
+### 4. forEach loop with lambda expression (JVAA 8)
+
+```java
+List<String> list = Arrays.asList("a", "b", "c");
+list.forEach(element -> System.out.println(element));
+```
+
+### 5. forEach loop with method reference (JVAA 8)
+
+```java
+List<String> list = Arrays.asList("a", "b", "c");
+list.forEach(System.out::println);
+```
+
+### 6. forEach with Stream API (JVAA 8)
+
+```java
+List<String> list = Arrays.asList("a", "b", "c");
+list.stream().forEach(element -> System.out.println(element));
+```
+
+### 7. ListIterator
+
+```java
+List<String> list = new ArrayList<>(Arrays.asList("a", "b", "c"));
+ListIterator<String> iterator = list.listIterator();
+while (iterator.hasNext()) {
+    String element = iterator.next();
+    System.out.println(element);
+}
+```
+
+### Deciding Factors
+
+- **Functional vs. Imperative**: forEach with Stream API is more functional and concise, while the traditional for loop, enhanced for loop, iterators, and ListIterator are more imperative.
+
+- **Support for Modification**: ListIterator supports bidirectional iteration and allows modification of the underlying list during iteration, which other methods may not support.
+
+- **Performance**: Performance considerations may vary based on the collection type and size, as well as the complexity of the iteration operation. Some methods may have better performance characteristics depending on the collection type and size. For example, traditional for loops might be more efficient for arrays, while iterators might perform better for certain types of collections like LinkedList.
+
+- **Readability and Maintainability**: Choose the iteration method that enhances the readability and maintainability of your code, considering the familiarity of the method to your team members and the alignment with the code style guidelines.
