@@ -1,4 +1,4 @@
-# title: Q&A
+# title: Q&A JAVA
 
 ## JAVA
 
@@ -1867,6 +1867,28 @@ Here is a visual representation of the thread lifecycle:
 - **Waiting**: Thread is waiting indefinitely for another thread's action.
 - **Timed Waiting**: Thread is waiting for a specified amount of time.
 - **Terminated**: Thread has completed execution or is terminated.
+
+## \*. What is the difference between a `wait()` and `sleep()` in Threads?
+
+![ThreadLifecycle](../../assets/ThreadWaitSleep.png)
+
+- `wait()` is a method of `Object` class. `sleep()` is a method of `java.lang.Thread` class.
+
+- `sleep()` allows the thread to go to sleep state for x milliseconds. When a thread goes into sleep state it doesn’t release the lock.
+
+```java
+synchronized(LOCK) {
+    Thread.sleep(1000); // LOCK is held
+}
+```
+
+- `wait()` allows thread to release the lock and goes to suspended state. This thread will be active when a notify() or notifAll() method is called for the same object.
+
+```java
+ synchronized(LOCK) {
+     LOCK.wait(); // LOCK is not held
+ }
+```
 
 ## \*. What is multithreading in Java, and how can you implement it using threads (Start with how thread is created)?
 
