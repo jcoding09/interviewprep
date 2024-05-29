@@ -4963,3 +4963,590 @@ public class OuterClass {
 - Static variables and methods can be accessed without creating an instance of the class.
 - Static blocks are executed once when the class is loaded.
 - Static nested classes can interact with static members of the outer class but require an instance to access non-static members.
+
+## \*. What is the difference between deadlock, livelock and starvation in threads in JAVA. Explain with code.
+
+Deadlock, livelock, and starvation are issues that can occur in concurrent programming, especially when using threads in Java. Let's go through each concept with definitions and examples to illustrate their differences.
+
+### Deadlock
+
+A deadlock occurs when two or more threads are blocked forever, each waiting on the other to release a resource. This usually happens with synchronized resources where threads obtain locks in different orders.
+
+#### Example:
+
+Here's an example where two threads attempt to acquire two locks in reverse order, causing a deadlock.
+
+```java
+public class DeadlockExample {
+    private static final Object lock1 = new Object();
+    private static final Object lock2 = new Object();
+
+    public static void main(String[] args) {
+        Thread thread1 = new Thread(() -> {
+            synchronized (lock1) {
+                System.out.println("Thread 1: Holding lock 1...");
+
+                try { Thread.sleep(10); } catch (InterruptedException e) {}
+                System.out.println("Thread 1: Waiting for lock 2...");
+
+                synchronized (lock2) {
+                    System.out.println("Thread 1: Holding lock 1 & 2...");
+                }
+            }
+        });
+
+        Thread thread2 = new Thread(() -> {
+            synchronized (lock2) {
+                System.out.println("Thread 2: Holding lock 2...");
+
+                try { Thread.sleep(10); } catch (InterruptedException e) {}
+                System.out.println("Thread 2: Waiting for lock 1...");
+
+                synchronized (lock1) {
+                    System.out.println("Thread 2: Holding lock 1 & 2...");
+                }
+            }
+        });
+
+        thread1.start();
+        thread2.start();
+    }
+}
+```
+
+In this code, `thread1` holds `lock1` and waits for `lock2`, while `thread2` holds `lock2` and waits for `lock1`, causing a deadlock.
+
+### Livelock
+
+A livelock occurs when two or more threads keep changing their state in response to each other without making any progress. It's similar to deadlock, but instead of being stuck waiting, the threads are actively trying to avoid the deadlock, thus never making progress.
+
+#### Example:
+
+Here's an example where two threads keep yielding to each other in an attempt to avoid a deadlock, causing a livelock.
+
+```java
+public class LivelockExample {
+    static class Resource {
+        private volatile boolean isLocked = false;
+
+        public synchronized void tryLock() throws InterruptedException {
+            while (isLocked) {
+                wait();
+            }
+            isLocked = true;
+        }
+
+        public synchronized void unlock() {
+            isLocked = false;
+            notify();
+        }
+    }
+
+    public static void main(String[] args) {
+        final Resource resource1 = new Resource();
+        final Resource resource2 = new Resource();
+
+        Thread thread1 = new Thread(() -> {
+            while (true) {
+                try {
+                    resource1.tryLock();
+                    Thread.sleep(50); // Simulating work
+                    resource2.tryLock();
+                    System.out.println("Thread 1: Acquired both locks, doing work.");
+                    break;
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } finally {
+                    resource1.unlock();
+                    resource2.unlock();
+                }
+            }
+        });
+
+        Thread thread2 = new Thread(() -> {
+            while (true) {
+                try {
+                    resource2.tryLock();
+                    Thread.sleep(50); // Simulating work
+                    resource1.tryLock();
+                    System.out.println("Thread 2: Acquired both locks, doing work.");
+                    break;
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } finally {
+                    resource2.unlock();
+                    resource1.unlock();
+                }
+            }
+        });
+
+        thread1.start();
+        thread2.start();
+    }
+}
+```
+
+In this example, both threads keep trying to acquire locks and release them immediately if they can't get both, causing them to loop indefinitely without making progress.
+
+### Starvation
+
+Starvation occurs when a thread is perpetually denied access to resources it needs to make progress. This can happen if the thread's priority is too low or if resources are consistently given to other higher-priority threads.
+
+#### Example:
+
+Here's an example where a low-priority thread is starved because higher-priority threads are always given preference.
+
+```java
+public class StarvationExample {
+    private static final Object lock = new Object();
+
+    public static void main(String[] args) {
+        Runnable highPriorityTask = () -> {
+            while (true) {
+                synchronized (lock) {
+                    System.out.println(Thread.currentThread().getName() + ": High priority task is running");
+                    try { Thread.sleep(50); } catch (InterruptedException e) {}
+                }
+            }
+        };
+
+        Runnable lowPriorityTask = () -> {
+            while (true) {
+                synchronized (lock) {
+                    System.out.println(Thread.currentThread().getName() + ": Low priority task is running");
+                    try { Thread.sleep(50); } catch (InterruptedException e) {}
+                }
+            }
+        };
+
+        Thread highPriorityThread1 = new Thread(highPriorityTask);
+        Thread highPriorityThread2 = new Thread(highPriorityTask);
+        Thread lowPriorityThread = new Thread(lowPriorityTask);
+
+        highPriorityThread1.setPriority(Thread.MAX_PRIORITY);
+        highPriorityThread2.setPriority(Thread.MAX_PRIORITY);
+        lowPriorityThread.setPriority(Thread.MIN_PRIORITY);
+
+        highPriorityThread1.start();
+        highPriorityThread2.start();
+        lowPriorityThread.start();
+    }
+}
+```
+
+In this code, the low-priority thread (`lowPriorityThread`) rarely gets to run because the high-priority threads (`highPriorityThread1` and `highPriorityThread2`) always take the lock.
+
+### Summary
+
+- **Deadlock**: Threads are stuck waiting for each other, making no progress.
+- **Livelock**: Threads keep changing state in response to each other but still make no progress.
+- **Starvation**: A thread is perpetually denied the resources it needs to progress.
+
+## \*. What happens if you submit a task when the queue of the thread pool is already filled ? Explain with code.
+
+When you submit a task to a thread pool whose queue is already full, the behavior depends on the rejection policy of the thread pool. In Java's `java.util.concurrent` package, the `ThreadPoolExecutor` class provides several built-in rejection policies. If the queue is full, the `RejectedExecutionHandler` decides what happens to the rejected task.
+
+`AbortPolicy`, `DiscardPolicy`, `DiscardOldestPolicy` and `CallerRunsPolicy` are strategies for handling rejected tasks in a `ThreadPoolExecutor` when the task queue is full. They determine what happens to a task that cannot be accepted for execution because the thread pool and its queue are saturated.
+
+Here are the four built-in rejection policies in Java:
+
+1. `AbortPolicy`: Throws a `RejectedExecutionException`.
+2. `DiscardPolicy`: Silently discards the rejected task.
+3. `DiscardOldestPolicy`: Discards the oldest unhandled request and then retries the task.
+4. `CallerRunsPolicy`: Runs the task in the caller's thread.
+
+### Example with `AbortPolicy`
+
+Here's a code example demonstrating what happens when you submit a task to a full thread pool using `AbortPolicy`.
+
+```java
+import java.util.concurrent.*;
+
+public class ThreadPoolFullQueueExample {
+
+    public static void main(String[] args) {
+        // Create a fixed thread pool with 2 threads and a bounded queue with a capacity of 2
+        ThreadPoolExecutor executor = new ThreadPoolExecutor(
+            2, // corePoolSize
+            2, // maximumPoolSize
+            0L, TimeUnit.MILLISECONDS, // keepAliveTime, keepAliveTime unit
+            new ArrayBlockingQueue<>(2), // workQueue
+            new ThreadPoolExecutor.AbortPolicy() // rejectionHandler
+        );
+
+        // Submitting 4 tasks
+        for (int i = 0; i < 4; i++) {
+            try {
+                executor.submit(new Task(i));
+            } catch (RejectedExecutionException e) {
+                System.out.println("Task " + i + " was rejected");
+            }
+        }
+
+        executor.shutdown();
+    }
+
+    static class Task implements Runnable {
+        private final int id;
+
+        Task(int id) {
+            this.id = id;
+        }
+
+        @Override
+        public void run() {
+            System.out.println("Task " + id + " is running");
+            try {
+                Thread.sleep(2000); // Simulate a long-running task
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+    }
+}
+```
+
+### Explanation
+
+1. **ThreadPoolExecutor Configuration**:
+
+   - `corePoolSize` and `maximumPoolSize` are set to 2.
+   - The queue size is set to 2 using `ArrayBlockingQueue<>(2)`.
+   - The rejection policy is `AbortPolicy`.
+
+2. **Submitting Tasks**:
+
+   - Four tasks are submitted to the executor.
+
+3. **Behavior**:
+   - The first two tasks will be executed by the two available threads.
+   - The next two tasks will be placed in the queue.
+   - When the fifth task is submitted, the queue is full and the thread pool can't accept more tasks.
+   - Since `AbortPolicy` is used, `RejectedExecutionException` is thrown, and the catch block prints "Task 3 was rejected".
+
+### Example with DiscardPolicy
+
+`DiscardPolicy` silently discards the rejected task. There is no indication that the task was not executed, and no exception is thrown.
+
+**Example:**
+
+```java
+import java.util.concurrent.*;
+
+public class DiscardPolicyExample {
+
+    public static void main(String[] args) {
+        // Create a thread pool with 2 threads and a bounded queue with a capacity of 2
+        ThreadPoolExecutor executor = new ThreadPoolExecutor(
+            2, // corePoolSize
+            2, // maximumPoolSize
+            0L, TimeUnit.MILLISECONDS, // keepAliveTime, keepAliveTime unit
+            new ArrayBlockingQueue<>(2), // workQueue
+            new ThreadPoolExecutor.DiscardPolicy() // rejectionHandler
+        );
+
+        // Submitting 4 tasks
+        for (int i = 0; i < 4; i++) {
+            try {
+                executor.submit(new Task(i));
+            } catch (RejectedExecutionException e) {
+                System.out.println("Task " + i + " was rejected");
+            }
+        }
+
+        executor.shutdown();
+    }
+
+    static class Task implements Runnable {
+        private final int id;
+
+        Task(int id) {
+            this.id = id;
+        }
+
+        @Override
+        public void run() {
+            System.out.println("Task " + id + " is running");
+            try {
+                Thread.sleep(2000); // Simulate a long-running task
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+    }
+}
+```
+
+**Explanation:**
+
+1. **ThreadPoolExecutor Configuration**:
+
+   - The pool size and queue are configured similarly to the previous examples.
+   - The rejection policy is `DiscardPolicy`.
+
+2. **Behavior**:
+   - When the third and fourth tasks are submitted, and the queue is full, `DiscardPolicy` will silently discard these tasks.
+   - No exception will be thrown, and no indication of the discard will be provided.
+
+### Example with DiscardOldestPolicy
+
+`DiscardOldestPolicy` discards the oldest unhandled request in the queue and then retries the execution of the current task. This ensures that the newest tasks are more likely to be executed, potentially prioritizing recent tasks over older ones that have been waiting the longest.
+
+**Example:**
+
+```java
+import java.util.concurrent.*;
+
+public class DiscardOldestPolicyExample {
+
+    public static void main(String[] args) {
+        // Create a thread pool with 2 threads and a bounded queue with a capacity of 2
+        ThreadPoolExecutor executor = new ThreadPoolExecutor(
+            2, // corePoolSize
+            2, // maximumPoolSize
+            0L, TimeUnit.MILLISECONDS, // keepAliveTime, keepAliveTime unit
+            new ArrayBlockingQueue<>(2), // workQueue
+            new ThreadPoolExecutor.DiscardOldestPolicy() // rejectionHandler
+        );
+
+        // Submitting 4 tasks
+        for (int i = 0; i < 4; i++) {
+            executor.submit(new Task(i));
+        }
+
+        executor.shutdown();
+    }
+
+    static class Task implements Runnable {
+        private final int id;
+
+        Task(int id) {
+            this.id = id;
+        }
+
+        @Override
+        public void run() {
+            System.out.println("Task " + id + " is running");
+            try {
+                Thread.sleep(2000); // Simulate a long-running task
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+    }
+}
+```
+
+**Explanation:**
+
+1. **ThreadPoolExecutor Configuration**:
+
+   - The pool size and queue are configured similarly to the previous examples.
+   - The rejection policy is `DiscardOldestPolicy`.
+
+2. **Behavior**:
+   - When the third task is submitted and the queue is full, `DiscardOldestPolicy` will discard the oldest task in the queue (the first task that was submitted and is still in the queue).
+   - The third task will then be added to the queue.
+   - When the fourth task is submitted, a similar process occurs: the oldest task in the queue (now the second task) will be discarded, and the fourth task will be added.
+
+### Example with `CallerRunsPolicy`
+
+Here’s an example using `CallerRunsPolicy`:
+
+```java
+import java.util.concurrent.*;
+
+public class ThreadPoolFullQueueCallerRunsExample {
+
+    public static void main(String[] args) {
+        // Create a fixed thread pool with 2 threads and a bounded queue with a capacity of 2
+        ThreadPoolExecutor executor = new ThreadPoolExecutor(
+            2, // corePoolSize
+            2, // maximumPoolSize
+            0L, TimeUnit.MILLISECONDS, // keepAliveTime, keepAliveTime unit
+            new ArrayBlockingQueue<>(2), // workQueue
+            new ThreadPoolExecutor.CallerRunsPolicy() // rejectionHandler
+        );
+
+        // Submitting 4 tasks
+        for (int i = 0; i < 4; i++) {
+            executor.submit(new Task(i));
+        }
+
+        executor.shutdown();
+    }
+
+    static class Task implements Runnable {
+        private final int id;
+
+        Task(int id) {
+            this.id = id;
+        }
+
+        @Override
+        public void run() {
+            System.out.println("Task " + id + " is running");
+            try {
+                Thread.sleep(2000); // Simulate a long-running task
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+    }
+}
+```
+
+### Explanation
+
+1. **ThreadPoolExecutor Configuration**:
+
+   - Same as above, but the rejection policy is `CallerRunsPolicy`.
+
+2. **Behavior**:
+   - When the fifth task is submitted and the queue is full, `CallerRunsPolicy` runs the task in the caller's thread.
+   - You will see "Task 3 is running" executed in the main thread, preventing the rejection.
+
+## \*. How to iterate through the HasHMap.
+
+Iterating through a `HashMap` in Java can be done in several ways, depending on what exactly you need to achieve. Here are some common methods to iterate through a `HashMap`:
+
+1. **Using `entrySet()` and a `for-each` loop**:
+2. **Using `keySet()` and a `for-each` loop**:
+3. **Using `values()` and a `for-each` loop**:
+4. **Using an iterator**:
+5. **Using Java 8's `forEach` method**:
+
+Let's go through each method with code examples.
+
+### 1. Using `entrySet()` and a `for-each` loop
+
+This method is often the most efficient when you need both keys and values.
+
+```java
+import java.util.HashMap;
+import java.util.Map;
+
+public class HashMapIteration {
+    public static void main(String[] args) {
+        // Create and populate a HashMap
+        HashMap<String, Integer> map = new HashMap<>();
+        map.put("One", 1);
+        map.put("Two", 2);
+        map.put("Three", 3);
+
+        // Iterating through entrySet using for-each loop
+        for (Map.Entry<String, Integer> entry : map.entrySet()) {
+            System.out.println("Key: " + entry.getKey() + ", Value: " + entry.getValue());
+        }
+    }
+}
+```
+
+### 2. Using `keySet()` and a `for-each` loop
+
+Use this method if you only need to work with keys.
+
+```java
+import java.util.HashMap;
+
+public class HashMapIteration {
+    public static void main(String[] args) {
+        // Create and populate a HashMap
+        HashMap<String, Integer> map = new HashMap<>();
+        map.put("One", 1);
+        map.put("Two", 2);
+        map.put("Three", 3);
+
+        // Iterating through keySet using for-each loop
+        for (String key : map.keySet()) {
+            System.out.println("Key: " + key + ", Value: " + map.get(key));
+        }
+    }
+}
+```
+
+### 3. Using `values()` and a `for-each` loop
+
+Use this method if you only need to work with values.
+
+```java
+import java.util.HashMap;
+
+public class HashMapIteration {
+    public static void main(String[] args) {
+        // Create and populate a HashMap
+        HashMap<String, Integer> map = new HashMap<>();
+        map.put("One", 1);
+        map.put("Two", 2);
+        map.put("Three", 3);
+
+        // Iterating through values using for-each loop
+        for (Integer value : map.values()) {
+            System.out.println("Value: " + value);
+        }
+    }
+}
+```
+
+### 4. Using an iterator
+
+You can use an iterator to remove entries while iterating.
+
+```java
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+public class HashMapIteration {
+    public static void main(String[] args) {
+        // Create and populate a HashMap
+        HashMap<String, Integer> map = new HashMap<>();
+        map.put("One", 1);
+        map.put("Two", 2);
+        map.put("Three", 3);
+
+        // Iterating through entrySet using an iterator
+        Iterator<Map.Entry<String, Integer>> iterator = map.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<String, Integer> entry = iterator.next();
+            System.out.println("Key: " + entry.getKey() + ", Value: " + entry.getValue());
+            // Example of removing an entry while iterating
+            if (entry.getKey().equals("Two")) {
+                iterator.remove();
+            }
+        }
+
+        // Printing map after removal
+        System.out.println("Map after removal: " + map);
+    }
+}
+```
+
+### 5. Using Java 8's `forEach` method
+
+This method uses a lambda expression and is concise and modern.
+
+```java
+import java.util.HashMap;
+
+public class HashMapIteration {
+    public static void main(String[] args) {
+        // Create and populate a HashMap
+        HashMap<String, Integer> map = new HashMap<>();
+        map.put("One", 1);
+        map.put("Two", 2);
+        map.put("Three", 3);
+
+        // Iterating using Java 8 forEach and lambda
+        map.forEach((key, value) -> System.out.println("Key: " + key + ", Value: " + value));
+    }
+}
+```
+
+### Summary
+
+- **`entrySet()` and a `for-each` loop**: Useful when you need both keys and values.
+- **`keySet()` and a `for-each` loop**: Useful when you only need keys.
+- **`values()` and a `for-each` loop**: Useful when you only need values.
+- **Using an iterator**: Useful when you need to remove elements while iterating.
+- **Java 8's `forEach` method**: A concise and modern way to iterate using lambda expressions.
