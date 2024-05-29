@@ -2,6 +2,12 @@
 
 ## JAVA
 
+### Table of Contents
+
+| Sr.No. | Question                                                                                                                                                                                                                                                                                      |
+| ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1      | [What are the key principles of object-oriented programming, and could you provide an example of each?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-001.html#-what-are-the-key-principles-of-object-oriented-programming-and-could-you-provide-an-example-of-each) |
+
 ## \*. What are the key principles of object-oriented programming, and could you provide an example of each?
 
 Object-oriented programming (OOP) in Java is based on four key principles: Encapsulation, Inheritance, Polymorphism, and Abstraction. Here's an overview of each principle with examples:
@@ -5143,6 +5149,8 @@ In this code, the low-priority thread (`lowPriorityThread`) rarely gets to run b
 - **Starvation**: A thread is perpetually denied the resources it needs to progress.
 
 ## \*. What happens if you submit a task when the queue of the thread pool is already filled ? Explain with code.
+
+![Blocking Queue & Thread Pool](../../assets/BlockingQueueThreadPool.jpeg)
 
 When you submit a task to a thread pool whose queue is already full, the behavior depends on the rejection policy of the thread pool. In Java's `java.util.concurrent` package, the `ThreadPoolExecutor` class provides several built-in rejection policies. If the queue is full, the `RejectedExecutionHandler` decides what happens to the rejected task.
 
