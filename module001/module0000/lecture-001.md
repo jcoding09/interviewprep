@@ -1,4 +1,4 @@
-# title: Q&A JAVA
+# title: JAVA
 
 ## JAVA
 
