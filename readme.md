@@ -31,14 +31,12 @@
 
 #### [Module 4 : MongoDB](./module/module0004/lecture-001.md)
 
-#### [Module 5 : Java](./module/module0005/lecture-001.md)
+#### [Module 5 : Java Part 1](./module/module0005/lecture-001.md)
 
-#### [Module 6 : SpringBoot](./module/module0006/lecture-001.md)
+#### [Module 6 : Java Part 2](./module001/module0000/lecture-001.md)
 
-#### [Module 7 : Q&A Answer JAVA](./module001/module0000/lecture-001.md)
+#### [Module 7 : Spring Boot](./module001/module0000/lecture-002.md)
 
-#### [Module 8 : Q&A Answer Spring Boot](./module001/module0000/lecture-002.md)
+#### [Module 8 : JAVA Code](./module002/module0000/lecture-001.md)
 
-#### [Module 9 : Q&A Answer JAVA Code](./module002/module0000/lecture-001.md)
-
-#### [Module 10 : Q&A Answer Spring Boot Code](./module002/module0000/lecture-002.md)
+#### [Module 9 : Spring Boot Code](./module002/module0000/lecture-002.md)
