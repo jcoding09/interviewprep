@@ -2,9 +2,9 @@
 
 ## JAVA Code
 
-| Sr.No. | Question                                                                                                                                                             |
-| ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1      | [Create a ArrayList and find duplicate elements from ArrayList using Stream API.](https://jcoding09.github.io/interviewprep/module002/module0000/lecture-001.html#-) |
+| Sr.No. | Question                                                                                                                                                                                                                                           |
+| ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1      | [Create a ArrayList and find duplicate elements from ArrayList using Stream API.](https://jcoding09.github.io/interviewprep/module002/module0000/lecture-001.html#-create-a-arraylist-and-find-duplicate-elements-from-arraylist-using-stream-api) |
 
 ## \*. Create a ArrayList and find duplicate elements from ArrayList using Stream API.
 
@@ -17,7 +17,8 @@ Certainly! Here's an example of Java code that demonstrates how to create an `Ar
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -50,9 +51,6 @@ public class FindDuplicates {
 
         System.out.println("Duplicate elements using 2nd Approach: ");
         System.out.println(myList.stream().filter(i->Collections.frequency(myList,i)>1).collect(Collectors.toSet()));
-
-
-
     }
 }
 ```
