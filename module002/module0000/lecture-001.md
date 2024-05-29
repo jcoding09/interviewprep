@@ -2,11 +2,10 @@
 
 ## JAVA Code
 
-| Sr.No. | Question                                                                                                                                                                                                                                           |
-| ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1      | [Create a ArrayList and find duplicate elements from ArrayList using Stream API.](https://jcoding09.github.io/interviewprep/module002/module0000/lecture-001.html#-create-a-arraylist-and-find-duplicate-elements-from-arraylist-using-stream-api) |
-
-| 2 | [Find a name of the employees starting with alphabet A from list using Stream API.](https://jcoding09.github.io/interviewprep/module002/module0000/lecture-001.html#-create-a-arraylist-and-find-duplicate-elements-from-arraylist-using-stream-api) |
+| Sr.No. | Question                                                                                                                                                                                                                                               |
+| ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1      | [Create a ArrayList and find duplicate elements from ArrayList using Stream API.](https://jcoding09.github.io/interviewprep/module002/module0000/lecture-001.html#-create-a-arraylist-and-find-duplicate-elements-from-arraylist-using-stream-api)     |
+| 2      | [Find a name of the employees starting with alphabet A from list using Stream API.](https://jcoding09.github.io/interviewprep/module002/module0000/lecture-001.html#-find-a-name-of-the-employees-starting-with-alphabet-a-from-list-using-stream-api) |
 
 ## \*. Create a ArrayList and find duplicate elements from ArrayList using Stream API.
 
