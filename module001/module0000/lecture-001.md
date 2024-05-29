@@ -5150,7 +5150,7 @@ In this code, the low-priority thread (`lowPriorityThread`) rarely gets to run b
 
 ## \*. What happens if you submit a task when the queue of the thread pool is already filled ? Explain with code.
 
-![Blocking Queue & Thread Pool](../../assets/BlockingQueueThreadPool.jpeg)
+![Diagram](../../assets/BlockingQueueThreadPool.jpeg)
 
 When you submit a task to a thread pool whose queue is already full, the behavior depends on the rejection policy of the thread pool. In Java's `java.util.concurrent` package, the `ThreadPoolExecutor` class provides several built-in rejection policies. If the queue is full, the `RejectedExecutionHandler` decides what happens to the rejected task.
 
