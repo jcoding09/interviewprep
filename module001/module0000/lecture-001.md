@@ -73,6 +73,7 @@
 | 64     | [What is the difference between deadlock, livelock and starvation in threads in JAVA? Explain with code](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-001.html#-what-is-the-difference-between-deadlock-livelock-and-starvation-in-threads-in-java-explain-with-code)                                                                                                                                                                        |
 | 65     | [What happens if you submit a task when the queue of the thread pool is already filled? Explain with code](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-001.html#-what-happens-if-you-submit-a-task-when-the-queue-of-the-thread-pool-is-already-filled--explain-with-code)                                                                                                                                                                  |
 | 66     | [How to iterate through the HashMap](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-001.html#-how-to-iterate-through-the-hashmap)                                                                                                                                                                                                                                                                                                              |
+| 67     | [How to sort an ArrayList in descending order](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-001.html#-how-to-sort-an-arraylist-in-descending-order)                                                                                                                                                                                                                                                                                          |
 
 ## \*. What are the key principles of object-oriented programming, and could you provide an example of each?
 
@@ -5646,3 +5647,139 @@ public class HashMapIteration {
 - **`values()` and a `for-each` loop**: Useful when you only need values.
 - **Using an iterator**: Useful when you need to remove elements while iterating.
 - **Java 8's `forEach` method**: A concise and modern way to iterate using lambda expressions.
+
+## \*. How to sort an ArrayList in descending order.
+
+### 1. Using `Collections.sort()` with a Custom Comparator
+
+You can use the `Collections.sort()` method with a custom comparator to sort the `ArrayList` in descending order.
+
+```java
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+
+public class SortArrayList {
+    public static void main(String[] args) {
+        ArrayList<Integer> list = new ArrayList<>();
+        list.add(5);
+        list.add(1);
+        list.add(3);
+        list.add(2);
+        list.add(4);
+
+        // Using Collections.sort with a custom comparator
+        Collections.sort(list, new Comparator<Integer>() {
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                return o2 - o1; // Descending order
+            }
+        });
+
+        System.out.println(list); // Output: [5, 4, 3, 2, 1]
+    }
+}
+```
+
+### 2. Using `Collections.sort()` with Lambda Expression
+
+Using a lambda expression simplifies the code compared to the anonymous inner class.
+
+```java
+import java.util.ArrayList;
+import java.util.Collections;
+
+public class SortArrayList {
+    public static void main(String[] args) {
+        ArrayList<Integer> list = new ArrayList<>();
+        list.add(5);
+        list.add(1);
+        list.add(3);
+        list.add(2);
+        list.add(4);
+
+        // Using Collections.sort with a lambda expression
+        Collections.sort(list, (o1, o2) -> o2 - o1);
+
+        System.out.println(list); // Output: [5, 4, 3, 2, 1]
+    }
+}
+```
+
+### 3. Using `List.sort()` with a Custom Comparator
+
+You can also use the `sort()` method of the `List` interface, which is available in Java 8 and later.
+
+```java
+import java.util.ArrayList;
+import java.util.Comparator;
+
+public class SortArrayList {
+    public static void main(String[] args) {
+        ArrayList<Integer> list = new ArrayList<>();
+        list.add(5);
+        list.add(1);
+        list.add(3);
+        list.add(2);
+        list.add(4);
+
+        // Using List.sort with a lambda expression
+        list.sort((o1, o2) -> o2 - o1);
+
+        System.out.println(list); // Output: [5, 4, 3, 2, 1]
+    }
+}
+```
+
+### 4. Using `Stream.sorted()` and Collecting to List
+
+Another way is to use the Java Stream API to sort the list and collect it back to an `ArrayList`.
+
+```java
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class SortArrayList {
+    public static void main(String[] args) {
+        ArrayList<Integer> list = new ArrayList<>();
+        list.add(5);
+        list.add(1);
+        list.add(3);
+        list.add(2);
+        list.add(4);
+
+        // Using Stream.sorted to sort in descending order
+        List<Integer> sortedList = list.stream()
+                                        .sorted((o1, o2) -> o2 - o1)
+                                        .collect(Collectors.toList());
+
+        System.out.println(sortedList); // Output: [5, 4, 3, 2, 1]
+    }
+}
+```
+
+### 5. Using `Collections.reverseOrder()`
+
+The `Collections.reverseOrder()` method returns a comparator that imposes the reverse of the natural ordering.
+
+```java
+import java.util.ArrayList;
+import java.util.Collections;
+
+public class SortArrayList {
+    public static void main(String[] args) {
+        ArrayList<Integer> list = new ArrayList<>();
+        list.add(5);
+        list.add(1);
+        list.add(3);
+        list.add(2);
+        list.add(4);
+
+        // Using Collections.sort with Collections.reverseOrder
+        Collections.sort(list, Collections.reverseOrder());
+
+        System.out.println(list); // Output: [5, 4, 3, 2, 1]
+    }
+}
+```
