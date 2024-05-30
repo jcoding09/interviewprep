@@ -30,7 +30,7 @@
 | 20 | [When dealing with batch jobs in a Spring Boot application, How to implement an automated solution to handle failures?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-when-dealing-with-batch-jobs-in-a-spring-boot-application-how-to-implement-an-automated-solution-to-handle-failures) |
 | 21 | [Is singleton bean thread safe?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-is-singleton-bean-thread-safe) |
 | 22 | [Spring Boot checklist](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-spring-boot-checklist) |
-| 23 | [How can you catch exception through jdbc templates?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-how-can-you-catch-exception-through-jdbc-templates) |
+| 23 | [How can you catch exception through jdbc templates?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-how-can-you-catch-exception-through-jdbc-templates-) |
 
 ## \*. How to create custom exception while creating the REST API in Spring Boot.
 
@@ -790,6 +790,50 @@ That covers the explanations for the annotations used in Spring related to bean 
 
 ## \*. Explain Dispatcher Servlet in Spring Boot.
 
+The DispatcherServlet is a core component in the Spring MVC framework, which is also utilized by Spring Boot. It acts as the central dispatcher for HTTP requests and is responsible for coordinating various components in the application to handle these requests effectively.
+
+### Responsibilities of DispatcherServlet:
+
+1. **Routing Requests**: It maps incoming HTTP requests to the appropriate handlers, such as controllers or REST endpoints.
+2. **Request Processing**: It processes requests by delegating to various helper components such as view resolvers, model handlers, and exception handlers.
+3. **View Resolution**: It resolves the views to be rendered, typically HTML, JSON, or XML, and facilitates the rendering process.
+4. **Exception Handling**: It can catch and handle exceptions thrown during request processing.
+
+### Design Pattern Utilized: Front Controller Pattern
+
+The DispatcherServlet uses the **Front Controller** design pattern. This pattern is characterized by having a single handler for all incoming requests, which then routes them to the appropriate specific handlers. Here's how the DispatcherServlet embodies this pattern:
+
+- **Centralized Request Handling**: All incoming HTTP requests are directed to the DispatcherServlet. This centralization simplifies the web application's configuration and management by having a single entry point for handling requests.
+- **Request Routing**: The DispatcherServlet routes the requests to various controllers based on the URL mapping and other request attributes. This routing mechanism is flexible and configurable, typically using annotations like `@RequestMapping`.
+- **Decoupling Components**: The DispatcherServlet decouples the various components involved in request processing, such as controllers, view resolvers, and exception handlers. Each component is responsible for a specific part of the request handling process, promoting separation of concerns and maintainability.
+- **Flexibility and Extensibility**: The DispatcherServlet allows for easy extension and customization of the request handling process through configuration, custom components, and annotations.
+
+### Workflow of DispatcherServlet:
+
+1. **Initialization**: When the application starts, the DispatcherServlet is initialized and configured. It reads the configuration to set up mappings, view resolvers, and other necessary components.
+2. **Request Handling**: When a request is received, the DispatcherServlet performs the following steps:
+   - **Mapping**: It uses handler mappings to determine which controller method should handle the request.
+   - **Handler Execution**: It invokes the determined controller method to process the request.
+   - **Model and View Handling**: The controller returns a ModelAndView object, which contains the data model and the view name.
+   - **View Resolution**: The DispatcherServlet uses view resolvers to translate the view name into an actual view, such as a JSP or a JSON response.
+   - **Rendering**: The final view is rendered and the response is sent back to the client.
+
+### Example Code Snippet:
+
+```java
+@RestController
+@RequestMapping("/api")
+public class MyController {
+
+    @GetMapping("/greeting")
+    public ResponseEntity<String> greeting() {
+        return new ResponseEntity<>("Hello, World!", HttpStatus.OK);
+    }
+}
+```
+
+In this example, when a request is made to `/api/greeting`, the DispatcherServlet intercepts the request, finds the appropriate handler (`greeting` method in `MyController`), and returns the response.
+
 ## \*. How to read data from HTTP?
 
 ## \*. How to schedule batch job in Spring Boot?
@@ -809,3 +853,37 @@ That covers the explanations for the annotations used in Spring related to bean 
 NoSQL, Reactive Framework, JMeter, JMC, 12 Factor Application, Design Principles, Horizontal vs Vertical Scaling, Master child replication, Caching, Spring boot repository, Java 8 Streams, Spring boot filters, Authentication, Microservices architecture, Synchronous vs Asynchronous, EDD, PDD
 
 ## \*. How can you catch exception through jdbc templates ?
+
+We have to catch `DataAccessException` because,
+
+`SQLException`, a checked exception, is not thrown by the any of the JdbcTemplate.query() methods hence you will get `Unreachable catch block for SQLException. This exception is never thrown from the try statement body. `
+
+Example :
+
+```java
+try
+{
+   // Your Code
+}
+catch (InvalidResultSetAccessException e)
+{
+    throw new RuntimeException(e);
+}
+catch (DataAccessException e)
+{
+    throw new RuntimeException(e);
+}
+```
+
+`InvalidResultSetAccessException` is a `DataAccessException` so it's optional in most of the case. And `DataAccessException` is already a `RuntimeException` so that no need to throw a Runtime exception. e.g.,
+
+```java
+try
+{
+   // Your Code
+}
+catch (DataAccessException e)
+{
+    throw new MyApplicationException("Specific exception occured", e);
+}
+```
