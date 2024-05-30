@@ -4,13 +4,46 @@
 
 ### Table of Contents
 
-| Sr.No. | Question |
-| ------ | -------- |
-| 0      | [ ]()    |
+| Sr No. | Question                                                                                                                                                                                                                                                 |
+| ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0      | [Ensuring Thread Execution Order](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-003.html#-ensuring-thread-execution-order)                                                                                                      |
+| 1      | [Handling Unhandled Exceptions in a Thread](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-003.html#-handling-unhandled-exceptions-in-a-thread)                                                                                  |
+| 2      | [Difference Between List<? extends T> and List<? super T>](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-003.html#-difference-between-list-extends-t-and-list-super-t)                                                          |
+| 3      | [Passing List<String> to a Method Accepting List<Object>](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-003.html#-passing-liststring-to-a-method-accepting-listobject)                                                          |
+| 4      | [Difference Between List<?> and List<Object>](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-003.html#-difference-between-list-and-listobject)                                                                                   |
+| 5      | [Generics with Arrays](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-003.html#-generics-with-arrays)                                                                                                                            |
+| 6      | [Sealed Classes & Interfaces](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-003.html#-sealed-classes--interfaces)                                                                                                               |
+| 7      | [What is Thread in Java?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-003.html#-what-is-thread-in-java)                                                                                                                       |
+| 8      | [What is the difference between Thread and Process in Java?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-003.html#-what-is-the-difference-between-thread-and-process-in-java)                                                 |
+| 9      | [How do you implement Thread in Java?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-003.html#-how-do-you-implement-thread-in-java)                                                                                             |
+| 10     | [When to use Runnable vs Thread in Java?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-003.html#-when-to-use-runnable-vs-thread-in-java)                                                                                       |
+| 11     | [What is the difference between start() and run() method of Thread class?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-003.html#-what-is-the-difference-between-start-and-run-method-of-thread-class)                         |
+| 12     | [What is the difference between Runnable and Callable in Java?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-003.html#-what-is-the-difference-between-runnable-and-callable-in-java)                                           |
+| 13     | [What is the difference between CyclicBarrier and CountDownLatch in Java?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-003.html#-what-is-the-difference-between-cyclicbarrier-and-countdownlatch-in-java)                     |
+| 14     | [What is Java Memory model?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-003.html#-what-is-java-memory-model)                                                                                                                 |
+| 15     | [What is volatile variable in Java?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-003.html#-what-is-volatile-variable-in-java)                                                                                                 |
+| 16     | [What is thread-safety? Is Vector a thread-safe class?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-003.html#-what-is-thread-safety-is-vector-a-thread-safe-class)                                                            |
+| 17     | [What is race condition in Java? Given one example?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-003.html#-what-is-race-condition-in-java-given-one-example)                                                                  |
+| 18     | [How to stop a thread in Java?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-003.html#-how-to-stop-a-thread-in-java)                                                                                                           |
+| 19     | [What happens when an Exception occurs in a thread?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-003.html#-what-happens-when-an-exception-occurs-in-a-thread)                                                                 |
+| 20     | [How do you share data between two threads in Java?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-003.html#-how-do-you-share-data-between-two-threads-in-java)                                                                 |
+| 21     | [What is the difference between notify and notifyAll in Java?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-003.html#-what-is-the-difference-between-notify-and-notifyall-in-java)                                             |
+| 22     | [Why wait, notify and notifyAll are not inside thread class?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-003.html#-why-wait-notify-and-notifyall-are-not-inside-thread-class)                                                |
+| 23     | [What is ThreadLocal variable in Java?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-003.html#-what-is-threadlocal-variable-in-java)                                                                                           |
+| 24     | [What is FutureTask in Java?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-003.html#-what-is-futuretask-in-java)                                                                                                               |
+| 25     | [What is the difference between the interrupted() and isInterrupted() method in Java?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-003.html#-what-is-the-difference-between-the-interrupted-and-isinterrupted-method-in-java) |
+| 26     | [Why wait and notify method are called from synchronized block?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-003.html#-why-wait-and-notify-method-are-called-from-synchronized-block)                                         |
+| 27     | [Why should you check condition for waiting in a loop?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-003.html#-why-should-you-check-condition-for-waiting-in-a-loop)                                                           |
+| 28     | [What is the difference between synchronized and concurrent collection in Java?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-003.html#-what-is-the-difference-between-synchronized-and-concurrent-collection-in-java)         |
+| 29     | [What is the difference between Stack and Heap in Java?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-003.html#-what-is-the-difference-between-stack-and-heap-in-java)                                                         |
+| 30     | [What is thread pool? Why should you thread pool in Java?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-003.html#-what-is-thread-pool-why-should-you-thread-pool-in-java)                                                      |
+| 31     | [How to avoid Deadlock in Java](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-003.html#-how-to-avoid-deadlock-in-java)                                                                                                          |
+| 32     | [How do you check if Thread holds a lock or not in Java?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-003.html#-how-do-you-check-if-thread-holds-a-lock-or-not-in-java)                                                       |
+| 33     | [How do you take Thread dump in Java?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-003.html#-how-do-you-take-thread-dump-in-java)                                                                                             |
+| 34     | [Which JVM parameter is used to control stack size of a Thread?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-003.html#-which-jvm-parameter-is-used-to-control-stack-size-of-a-thread)                                         |
+| 35     | [ReentrantLock vs Synchronized Keyword In Java](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-003.html#-reentrantlock-vs-synchronized-keyword-in-java)                                                                          |
 
-Sure! Here are the explanations along with the Java code examples:
-
-## \*. Ensuring Thread Execution Order
+## \*. You have thread T1, T2, and T3, how will you ensure that thread T2 run after T1 and thread T3 run after T2?
 
 To ensure that thread T2 runs after T1 and thread T3 runs after T2, you can use the `join()` method. This method allows one thread to wait for the completion of another.
 
@@ -46,7 +79,7 @@ public class ThreadExecutionOrder {
 }
 ```
 
-## \*. Handling Unhandled Exceptions in a Thread
+## \*. How do you handle an unhandled exception in the thread?
 
 You can set an `UncaughtExceptionHandler` for a thread to handle uncaught exceptions.
 
@@ -66,13 +99,13 @@ public class UnhandledException {
 }
 ```
 
-## \*. Difference Between `List<? extends T>` and `List<? super T>`
+## \*. What is the difference between `List<? extends T>` and `List <? super T>` ?
 
 - `List<? extends T>`: A list of objects that are instances of T or its subclasses. You can read from the list, but you cannot add to it (except `null`).
 
 - `List<? super T>`: A list of objects that are instances of T or its superclasses. You can add instances of T or its subclasses to the list, but reading from it only returns `Object`.
 
-## \*. Passing `List<String>` to a Method Accepting `List<Object>`
+## \*. Can you pass `List<String>` to a method which accepts `List<Object>` ?
 
 No, you cannot pass `List<String>` to a method that accepts `List<Object>` because of type safety. Generics are invariant in Java.
 
@@ -89,13 +122,13 @@ public class GenericExample {
 }
 ```
 
-## \*. Difference Between `List<?>` and `List<Object>`
+## \*. Difference between `List<?>` and `List<Object>` in Java?
 
 - `List<?>`: A list of unknown type. You can only read from the list, but cannot add to it (except `null`).
 
 - `List<Object>`: A list that can hold any type of objects. You can both read from and add to the list.
 
-## \*. Generics with Arrays
+## \*. Can we use Generics with Array?
 
 You cannot create generic arrays directly in Java due to type erasure. However, you can use `List` or other generic collections instead.
 
@@ -107,7 +140,7 @@ You cannot create generic arrays directly in Java due to type erasure. However, 
 List<T> list = new ArrayList<>();
 ```
 
-## \*. Sealed Classes & Interfaces
+## \*. Explain Sealed Classes & Interfaces in Java.
 
 Sealed classes and interfaces restrict which classes can extend or implement them. Introduced in Java 15 as a preview feature and standardized in Java 17.
 
