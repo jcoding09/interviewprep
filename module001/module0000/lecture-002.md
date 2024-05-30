@@ -30,6 +30,7 @@
 | 20 | [When dealing with batch jobs in a Spring Boot application, How to implement an automated solution to handle failures?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-when-dealing-with-batch-jobs-in-a-spring-boot-application-how-to-implement-an-automated-solution-to-handle-failures) |
 | 21 | [Is singleton bean thread safe?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-is-singleton-bean-thread-safe) |
 | 22 | [Spring Boot checklist](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-spring-boot-checklist) |
+| 23 | [How can you catch exception through jdbc templates?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-how-can-you-catch-exception-through-jdbc-templates) |
 
 ## \*. How to create custom exception while creating the REST API in Spring Boot.
 
@@ -806,3 +807,5 @@ That covers the explanations for the annotations used in Spring related to bean 
 ## \*. Spring Boot checklist
 
 NoSQL, Reactive Framework, JMeter, JMC, 12 Factor Application, Design Principles, Horizontal vs Vertical Scaling, Master child replication, Caching, Spring boot repository, Java 8 Streams, Spring boot filters, Authentication, Microservices architecture, Synchronous vs Asynchronous, EDD, PDD
+
+## \*. How can you catch exception through jdbc templates ?
