@@ -4,33 +4,35 @@
 
 ### Table of Contents
 
-| Sr.No. | Question                                                                                                                                                                                                                                                                                                                                                   |
-| ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 0      | [How to create custom exception while creating the REST API in Spring Boot.](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-how-to-create-custom-exception-while-creating-the-rest-api-in-spring-boot)                                                                                                                   |
-| 1      | [Difference between Controller and RestController in Spring Boot.](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-difference-between-controller-and-restcontroller-in-spring-boot)                                                                                                                                       |
-| 2      | [Explain where and whenservice annotation to use in Spring Boot. How repository and Hibernate ORM is connected. Demonstrate the code.](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-explain-where-and-whenservice-annotation-to-use-in-spring-boot-how-repository-and-hibernate-orm-is-connected-demonstrate-the-code) |
-| 3      | [What is Spring Boot and what are its benefits?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-what-is-spring-boot-and-what-are-its-benefits)                                                                                                                                                                           |
-| 4      | [What makes Spring Boot superior to JAX-RS?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-what-makes-spring-boot-superior-to-jax-rs)                                                                                                                                                                                   |
-| 5      | [What Spring Boot features help develop Microservices Applications?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-what-spring-boot-features-help-develop-microservices-applications)                                                                                                                                   |
-
-| 6 | [Why Spring Boot is preferred over any other framework?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-why-spring-boot-is-preferred-over-any-other-framework) |
-| 7 | [What are the key dependencies of Spring Boot?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-what-are-the-key-dependencies-of-spring-boot) |
-| 8 | [What annotations are used to create an interceptor in Spring Boot?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-what-annotations-are-used-to-create-an-interceptor-in-spring-boot) |
-| 9 | [What is Swagger in Spring Boot?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-what-is-swagger-in-spring-boot) |
-| 10 | [What are profiles in Spring Boot?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-what-are-profiles-in-spring-boot) |
-| 11 | [What differentiates Spring Data JPA and Hibernate?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-what-differentiates-spring-data-jpa-and-hibernate-) |
-| 12 | [How are the @RestController and @Controller annotation different?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-how-are-the-restcontroller-and-controller-annotation-different) |
-| 13 | [What are some common annotations used in Spring for managing bean properties, injection, and state? Could you explain the purpose of each annotation and how they are typically used in a Spring application?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-what-are-some-common-annotations-used-in-spring-for-managing-bean-properties-injection-and-state-could-you-explain-the-purpose-of-each-annotation-and-how-they-are-typically-used-in-a-spring-application) |
-| 14 | [Explain Dispatcher Servlet in Spring Boot.](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-explain-dispatcher-servlet-in-spring-boot) |
-| 15 | [How to read data from HTTP?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-how-to-read-data-from-http) |
-| 16 | [How to schedule batch job in Spring Boot?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-how-to-schedule-batch-job-in-spring-boot) |
-| 17 | [How to change IP address in Spring Boot?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-how-to-change-ip-address-in-spring-boot) |
-| 18 | [How to add different server in your Spring Boot project?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-how-to-add-different-server-in-your-spring-boot-prject) |
-| 19 | [How Spring MVC works?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-how-spring-mvc-works-) |
-| 20 | [When dealing with batch jobs in a Spring Boot application, How to implement an automated solution to handle failures?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-when-dealing-with-batch-jobs-in-a-spring-boot-application-how-to-implement-an-automated-solution-to-handle-failures) |
-| 21 | [Is singleton bean thread safe?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-is-singleton-bean-thread-safe) |
-| 22 | [Spring Boot checklist](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-spring-boot-checklist) |
-| 23 | [How can you catch exception through jdbc templates?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-how-can-you-catch-exception-through-jdbc-templates-) |
+| Sr.No. | Question                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0      | [How to create custom exception while creating the REST API in Spring Boot.](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-how-to-create-custom-exception-while-creating-the-rest-api-in-spring-boot)                                                                                                                                                                                                                                                                    |
+| 1      | [Difference between Controller and RestController in Spring Boot.](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-difference-between-controller-and-restcontroller-in-spring-boot)                                                                                                                                                                                                                                                                                        |
+| 2      | [Explain where and whenservice annotation to use in Spring Boot. How repository and Hibernate ORM is connected. Demonstrate the code.](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-explain-where-and-whenservice-annotation-to-use-in-spring-boot-how-repository-and-hibernate-orm-is-connected-demonstrate-the-code)                                                                                                                                                  |
+| 3      | [What is Spring Boot and what are its benefits?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-what-is-spring-boot-and-what-are-its-benefits)                                                                                                                                                                                                                                                                                                                            |
+| 4      | [What makes Spring Boot superior to JAX-RS?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-what-makes-spring-boot-superior-to-jax-rs)                                                                                                                                                                                                                                                                                                                                    |
+| 5      | [What Spring Boot features help develop Microservices Applications?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-what-spring-boot-features-help-develop-microservices-applications)                                                                                                                                                                                                                                                                                    |
+| 6      | [Why Spring Boot is preferred over any other framework?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-why-spring-boot-is-preferred-over-any-other-framework)                                                                                                                                                                                                                                                                                                            |
+| 7      | [What are the key dependencies of Spring Boot?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-what-are-the-key-dependencies-of-spring-boot)                                                                                                                                                                                                                                                                                                                              |
+| 8      | [What annotations are used to create an interceptor in Spring Boot?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-what-annotations-are-used-to-create-an-interceptor-in-spring-boot)                                                                                                                                                                                                                                                                                    |
+| 9      | [What is Swagger in Spring Boot?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-what-is-swagger-in-spring-boot)                                                                                                                                                                                                                                                                                                                                                          |
+| 10     | [What are profiles in Spring Boot?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-what-are-profiles-in-spring-boot)                                                                                                                                                                                                                                                                                                                                                      |
+| 11     | [What differentiates Spring Data JPA and Hibernate?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-what-differentiates-spring-data-jpa-and-hibernate-)                                                                                                                                                                                                                                                                                                                   |
+| 12     | [How are the @RestController and @Controller annotation different?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-how-are-the-restcontroller-and-controller-annotation-different)                                                                                                                                                                                                                                                                                        |
+| 13     | [What are some common annotations used in Spring for managing bean properties, injection, and state? Could you explain the purpose of each annotation and how they are typically used in a Spring application?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-what-are-some-common-annotations-used-in-spring-for-managing-bean-properties-injection-and-state-could-you-explain-the-purpose-of-each-annotation-and-how-they-are-typically-used-in-a-spring-application) |
+| 14     | [Explain Dispatcher Servlet in Spring Boot.](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-explain-dispatcher-servlet-in-spring-boot)                                                                                                                                                                                                                                                                                                                                    |
+| 15     | [How to read data from HTTP?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-how-to-read-data-from-http)                                                                                                                                                                                                                                                                                                                                                                  |
+| 16     | [How to schedule batch job in Spring Boot?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-how-to-schedule-batch-job-in-spring-boot)                                                                                                                                                                                                                                                                                                                                      |
+| 17     | [How to change IP address in Spring Boot?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-how-to-change-ip-address-in-spring-boot)                                                                                                                                                                                                                                                                                                                                        |
+| 18     | [How to add different server in your Spring Boot project?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-how-to-add-different-server-in-your-spring-boot-prject)                                                                                                                                                                                                                                                                                                         |
+| 19     | [How Spring MVC works?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-how-spring-mvc-works-)                                                                                                                                                                                                                                                                                                                                                                             |
+| 20     | [When dealing with batch jobs in a Spring Boot application, How to implement an automated solution to handle failures?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-when-dealing-with-batch-jobs-in-a-spring-boot-application-how-to-implement-an-automated-solution-to-handle-failures)                                                                                                                                                                               |
+| 21     | [Is singleton bean thread safe?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-is-singleton-bean-thread-safe)                                                                                                                                                                                                                                                                                                                                                            |
+| 22     | [Spring Boot checklist](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-spring-boot-checklist)                                                                                                                                                                                                                                                                                                                                                                             |
+| 23     | [How can you catch exception through jdbc templates?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-how-can-you-catch-exception-through-jdbc-templates-)                                                                                                                                                                                                                                                                                                                 |
+| 24     | [Microservice Architecture and its associated Design Patterns, with a focus on the Circuit Breaker and API Gateway patterns.](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-how-can-you-catch-exception-through-jdbc-templates-)                                                                                                                                                                                                                                         |
+| 25     | [The distinction between a Discovery Client and a Discovery Server.](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-how-can-you-catch-exception-through-jdbc-templates-)                                                                                                                                                                                                                                                                                                  |
+| 26     | [The role and significance of Message Queues in a microservices environment.](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-how-can-you-catch-exception-through-jdbc-templates-)                                                                                                                                                                                                                                                                                         |
 
 ## \*. How to create custom exception while creating the REST API in Spring Boot.
 
@@ -887,3 +889,112 @@ catch (DataAccessException e)
     throw new MyApplicationException("Specific exception occured", e);
 }
 ```
+
+## \*. Microservice Architecture and its associated Design Patterns, with a focus on the Circuit Breaker and API Gateway patterns.
+
+Microservices architecture is an approach to building a single application as a suite of small services, each running in its own process and communicating with lightweight mechanisms. Two important design patterns in microservices architecture are Circuit Breaker and API Gateway.
+
+#### Circuit Breaker Pattern:
+
+The Circuit Breaker pattern is used to prevent a microservice from continuously trying to execute an operation that is likely to fail, thereby improving the system's resiliency.
+
+```java
+// Using Resilience4j Circuit Breaker in Spring Boot
+
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import org.springframework.stereotype.Service;
+
+@Service
+public class MyService {
+
+    @CircuitBreaker(name = "backendA")
+    public String doSomething() {
+        // Call to external service or resource
+        return "Result";
+    }
+}
+```
+
+#### API Gateway Pattern:
+
+API Gateway is a design pattern where a single entry point is used to provide various APIs. It acts as a reverse proxy, routing requests from clients to appropriate microservices.
+
+```java
+// Using Spring Cloud Gateway in Spring Boot
+
+import org.springframework.cloud.gateway.route.RouteLocator;
+import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class GatewayConfig {
+
+    @Bean
+    public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
+        return builder.routes()
+                .route("example_route", r -> r.path("/example")
+                        .uri("http://example.com"))
+                .build();
+    }
+}
+```
+
+## \*. The distinction between a Discovery Client and a Discovery Server.
+
+In a microservices architecture, services need to discover each other dynamically. A Discovery Client is a component in a microservice that communicates with a Discovery Server to register itself and discover other services.
+
+#### Discovery Client:
+
+```java
+// Using Spring Cloud Netflix Eureka Client in Spring Boot
+
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
+import org.springframework.stereotype.Service;
+
+@EnableEurekaClient
+@Service
+public class MyService {
+    // Service logic
+}
+```
+
+#### Discovery Server:
+
+```java
+// Using Spring Cloud Netflix Eureka Server in Spring Boot
+
+import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@EnableEurekaServer
+@SpringBootApplication
+public class DiscoveryServerApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(DiscoveryServerApplication.class, args);
+    }
+}
+```
+
+## \*. The role and significance of Message Queues in a microservices environment.
+
+Message Queues are vital in a microservices environment for asynchronous communication between services, enabling decoupling and scalability.
+
+#### Using RabbitMQ with Spring Boot:
+
+```java
+// Configuring RabbitMQ with Spring Boot
+
+import org.springframework.amqp.rabbit.annotation.EnableRabbit;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+@EnableRabbit
+public class RabbitMQConfig {
+    // RabbitMQ configuration
+}
+```
+
+These code snippets illustrate how you can implement these concepts using Java Spring Boot.
