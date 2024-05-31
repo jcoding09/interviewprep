@@ -42,6 +42,9 @@
 | 33     | [How do you take Thread dump in Java?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-003.html#-how-do-you-take-thread-dump-in-java)                                                                                                                                            |
 | 34     | [Which JVM parameter is used to control stack size of a Thread?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-003.html#-which-jvm-parameter-is-used-to-control-stack-size-of-a-thread)                                                                                        |
 | 35     | [ReentrantLock vs Synchronized Keyword In Java](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-003.html#-reentrantlock-vs-synchronized-keyword-in-java)                                                                                                                         |
+| 36     | [Can we run a thread twice in Java?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-003.html#-can-we-run-a-thread-twice-in-java)                                                                                                                                                |
+| 37     | [Can we start a thread twice in Java?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-003.html#-can-we-start-a-thread-twice-in-java)                                                                                                                                            |
+| 38     | [Next vs hasNext in Java.](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-003.html#-next-vs-hasnext-in-java)                                                                                                                                                                    |
 
 ## \*. You have thread T1, T2, and T3, how will you ensure that thread T2 run after T1 and thread T3 run after T2?
 
@@ -941,3 +944,17 @@ public class ReentrantLockExample {
     }
 }
 ```
+
+## \*. Can we run a thread twice in Java?
+
+- Yes, when you call the run() method, it doesn't create a new thread. The run() method is treated as a normal method and pushed into the main stack, so the main thread would execute it. So, it's not multi-threading.
+
+## \*. Can we start a thread twice in Java?
+
+- No, Thread can only start once. If you try to start it for a second time, it will throw an exception, i.e., `java.lang.IllegalThreadStateException`.
+
+## \*. Next va hasNext in Java.
+
+- hasNext() : hasNext() method returns true if iterator have more elements.
+
+- next() : next() method returns the next element and also moves cursor pointer to the next element.
