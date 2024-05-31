@@ -953,7 +953,7 @@ public class ReentrantLockExample {
 
 - No, Thread can only start once. If you try to start it for a second time, it will throw an exception, i.e., `java.lang.IllegalThreadStateException`.
 
-## \*. Next va hasNext in Java.
+## \*. Next vs hasNext in Java.
 
 - hasNext() : hasNext() method returns true if iterator have more elements.
 
