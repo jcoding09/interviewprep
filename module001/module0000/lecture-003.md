@@ -958,3 +958,171 @@ public class ReentrantLockExample {
 - hasNext() : hasNext() method returns true if iterator have more elements.
 
 - next() : next() method returns the next element and also moves cursor pointer to the next element.
+
+## \*. Can you use this() and super() both in a constructor?
+
+- Both this() and super() can not be used together in constructor.
+
+`super()`- calls the base class constructor whereas
+`this()`- calls current class constructor.
+
+- Both this() and super() are constructor calls.
+
+- Constructor call must always be the first statement. So you either have super() or this() as first statement.
+
+## \*. Can you make a constructor final, static or abstract?
+
+When you set a method as `final` it means: "I don't want any class override it." But according to the Java Language Specification: JLS 8.8 - "Constructor declarations are not members. They are never inherited and therefore are not subject to hiding or overriding."
+
+When you set a method as `static` it means: "This method belongs to the class, not a particular object." But the constructor is implicitly called to initialize an object, so there is no purpose in having a static constructor.
+
+When you set a method as `abstract` it means: "This method doesn't have a body and it should be implemented in a child class." But the constructor is called implicitly when the new keyword is used so it can't lack a body.
+
+Constructors aren't inherited so can't be overridden so no use to have `final` constructor
+
+Constructor is called automatically when an instance of the class is created, it has access to instance fields of the class. so no use to have `static` constructor.
+
+Constructor can't be overridden so no use to have an `abstract` constructor.
+
+Let's go through each question and provide a Java code snippet where appropriate to illustrate the concepts.
+
+## \*. Discuss the pros and cons of using the ThreadLocal class in Java for managing thread-local variables.
+
+**Pros:**
+
+- **Thread Safety:** Each thread has its own isolated copy of a ThreadLocal variable, eliminating the need for synchronization.
+- **Encapsulation:** Useful for managing per-thread data such as user sessions or transaction contexts.
+- **Performance:** Reduces the contention between threads since no sharing of variables occurs.
+
+**Cons:**
+
+- **Memory Leaks:** Can lead to memory leaks if not managed properly, especially in the case of thread pools where threads are reused.
+- **Complexity:** May add to the complexity of the codebase and make it harder to reason about the flow of data.
+- **Debugging Difficulty:** Debugging thread-local variables can be challenging due to their isolated nature.
+
+**Java Code Snippet:**
+
+```java
+public class ThreadLocalExample {
+    private static final ThreadLocal<Integer> threadLocal = ThreadLocal.withInitial(() -> 1);
+
+    public static void main(String[] args) {
+        Runnable task = () -> {
+            int value = threadLocal.get();
+            System.out.println(Thread.currentThread().getName() + " initial value: " + value);
+            threadLocal.set(value + 1);
+            System.out.println(Thread.currentThread().getName() + " updated value: " + threadLocal.get());
+        };
+
+        Thread thread1 = new Thread(task);
+        Thread thread2 = new Thread(task);
+
+        thread1.start();
+        thread2.start();
+    }
+}
+```
+
+## \*. What are CompletableFutures in Java, and how do they enable asynchronous programming?
+
+**CompletableFuture** is part of the Java `java.util.concurrent` package and provides a way to handle asynchronous programming. It represents a future result of an asynchronous computation and provides methods to handle the result once it's available, chain multiple computations, and handle errors.
+
+**Java Code Snippet:**
+
+```java
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+
+public class CompletableFutureExample {
+    public static void main(String[] args) throws InterruptedException, ExecutionException {
+        CompletableFuture<String> future = CompletableFuture.supplyAsync(() -> {
+            // Simulate a long-running task
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new IllegalStateException(e);
+            }
+            return "Hello, World!";
+        });
+
+        // Attach a callback to be executed when the future is completed
+        future.thenAccept(result -> {
+            System.out.println("Result: " + result);
+        });
+
+        // Wait for the future to complete
+        future.get();
+    }
+}
+```
+
+## \*. What do you mean by the statement- Stream is lazy?
+
+Streams in Java are lazy because they do not process data until a terminal operation is invoked. Intermediate operations (like `map`, `filter`, etc.) are only executed when a terminal operation (like `collect`, `forEach`, etc.) is called.
+
+**Java Code Snippet:**
+
+```java
+import java.util.Arrays;
+import java.util.List;
+
+public class StreamLazinessExample {
+    public static void main(String[] args) {
+        List<String> names = Arrays.asList("Alice", "Bob", "Charlie");
+
+        // Intermediate operations are not executed yet
+        names.stream()
+                .filter(name -> {
+                    System.out.println("Filtering: " + name);
+                    return name.startsWith("A");
+                })
+                .map(name -> {
+                    System.out.println("Mapping: " + name);
+                    return name.toUpperCase();
+                });
+
+        System.out.println("No terminal operation yet.");
+
+        // Terminal operation triggers processing
+        names.stream()
+                .filter(name -> {
+                    System.out.println("Filtering: " + name);
+                    return name.startsWith("A");
+                })
+                .map(name -> {
+                    System.out.println("Mapping: " + name);
+                    return name.toUpperCase();
+                })
+                .forEach(name -> System.out.println("Final Result: " + name));
+    }
+}
+```
+
+## \*. What does the peek() method do? When should you use it?
+
+The `peek()` method in Java Streams is an intermediate operation that allows you to perform a side-effect action (such as logging) on each element as it is processed. It is primarily used for debugging purposes to see the contents of the stream at various points.
+
+**Java Code Snippet:**
+
+```java
+import java.util.Arrays;
+import java.util.List;
+
+public class StreamPeekExample {
+    public static void main(String[] args) {
+        List<String> names = Arrays.asList("Alice", "Bob", "Charlie");
+
+        names.stream()
+                .filter(name -> name.startsWith("A"))
+                .peek(name -> System.out.println("Filtered: " + name))
+                .map(String::toUpperCase)
+                .peek(name -> System.out.println("Mapped: " + name))
+                .forEach(name -> System.out.println("Final Result: " + name));
+    }
+}
+```
+
+**When to use `peek()`:**
+
+- Use `peek()` when you want to inspect the elements of the stream at a certain point in the pipeline, usually for debugging purposes.
+- Avoid using `peek()` for anything that alters the state or relies on side-effects as it goes against the functional programming paradigm.
