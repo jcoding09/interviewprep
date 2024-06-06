@@ -42,3 +42,5 @@
 #### [Module 9 : JAVA Code](./module002/module0000/lecture-001.md)
 
 #### [Module 10 : Spring Boot Code](./module002/module0000/lecture-002.md)
+
+#### [Module 11 : LeetCode Blind 75](./module/module0006/lecture-001.md)
