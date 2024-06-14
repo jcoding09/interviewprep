@@ -1,6 +1,6 @@
-# title: JAVA
+Title: Java Part 3
 
-## JAVA
+# Title: Java
 
 ### Table of Contents
 

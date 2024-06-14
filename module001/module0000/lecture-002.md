@@ -1,6 +1,6 @@
-# title: Spring Boot
+Title : Spring Boot part 1
 
-## Spring Boot
+## Title : Spring Boot
 
 ### Table of Contents
 
