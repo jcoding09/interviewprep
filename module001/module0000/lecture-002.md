@@ -33,6 +33,7 @@ Title : Spring Boot part 1
 | 24     | [Microservice Architecture and its associated Design Patterns, with a focus on the Circuit Breaker and API Gateway patterns.](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-microservice-architecture-and-its-associated-design-patterns-with-a-focus-on-the-circuit-breaker-and-api-gateway-patterns)                                                                                                                                                                   |
 | 25     | [The distinction between a Discovery Client and a Discovery Server.](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-the-distinction-between-a-discovery-client-and-a-discovery-server)                                                                                                                                                                                                                                                                                    |
 | 26     | [The role and significance of Message Queues in a microservices environment.](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-the-role-and-significance-of-message-queues-in-a-microservices-environment)                                                                                                                                                                                                                                                                  |
+| 27     | [How one spring boot application communicate with another spring boot application?]()                                                                                                                                                                                                                                                                                                                                                                                                                       |
 
 ## \*. How to create custom exception while creating the REST API in Spring Boot.
 
@@ -998,3 +999,201 @@ public class RabbitMQConfig {
 ```
 
 These code snippets illustrate how you can implement these concepts using Java Spring Boot.
+
+## \*. How one spring boot application communicate with another spring boot application?
+
+In a microservices architecture, Spring Boot applications commonly communicate with each other over HTTP using RESTful APIs or via messaging queues. Here are some common approaches to facilitate this communication:
+
+### 1. **RESTful Communication**
+
+One of the most common ways for Spring Boot applications to communicate is through RESTful APIs. Each service exposes REST endpoints, and other services can call these endpoints to exchange data. Here's how you can set this up:
+
+#### Using `RestTemplate` (Synchronous Communication):
+
+`RestTemplate` is a synchronous client to perform HTTP requests in Spring. It is part of the Spring Framework and is easy to use.
+
+```java
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+@Service
+public class MyService {
+
+    @Autowired
+    private RestTemplate restTemplate;
+
+    public String getDataFromOtherService() {
+        String url = "http://other-service/api/data";
+        return restTemplate.getForObject(url, String.class);
+    }
+}
+```
+
+You need to define `RestTemplate` as a bean:
+
+```java
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestTemplate;
+
+@Configuration
+public class AppConfig {
+
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
+}
+```
+
+#### Using `WebClient` (Asynchronous Communication):
+
+`WebClient` is part of the Spring WebFlux module and supports asynchronous, non-blocking communication.
+
+```java
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
+
+@Service
+public class MyService {
+
+    @Autowired
+    private WebClient.Builder webClientBuilder;
+
+    public Mono<String> getDataFromOtherService() {
+        return webClientBuilder.build()
+                .get()
+                .uri("http://other-service/api/data")
+                .retrieve()
+                .bodyToMono(String.class);
+    }
+}
+```
+
+You need to define `WebClient.Builder` as a bean:
+
+```java
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.reactive.function.client.WebClient;
+
+@Configuration
+public class AppConfig {
+
+    @Bean
+    public WebClient.Builder webClientBuilder() {
+        return WebClient.builder();
+    }
+}
+```
+
+### 2. **Messaging Queues**
+
+For more decoupled communication, services can use messaging systems such as RabbitMQ, Apache Kafka, or ActiveMQ. This approach is useful for event-driven architectures.
+
+#### Using RabbitMQ:
+
+##### Producer:
+
+```java
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class MessageProducer {
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
+    public void sendMessage(String message) {
+        rabbitTemplate.convertAndSend("exchange", "routingKey", message);
+    }
+}
+```
+
+##### Consumer:
+
+```java
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.stereotype.Service;
+
+@Service
+public class MessageConsumer {
+
+    @RabbitListener(queues = "queueName")
+    public void receiveMessage(String message) {
+        // Process the message
+    }
+}
+```
+
+You also need to configure RabbitMQ in your application properties or configuration class.
+
+### 3. **Service Discovery and Load Balancing**
+
+In a microservices environment, you often use service discovery tools like Eureka, Consul, or Zookeeper, along with client-side load balancing tools like Spring Cloud LoadBalancer or Netflix Ribbon.
+
+#### Using Eureka:
+
+1. **Eureka Server**: Set up a Eureka server to register all services.
+
+2. **Eureka Client**: Each service registers itself with the Eureka server and discovers other services.
+
+**Eureka Client Configuration:**
+
+```yaml
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+```
+
+**Eureka Server Configuration:**
+
+```yaml
+eureka:
+  client:
+    registerWithEureka: false
+    fetchRegistry: false
+  server:
+    waitTimeInMsWhenSyncEmpty: 0
+```
+
+#### Calling Another Service with Eureka:
+
+```java
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+@Service
+public class MyService {
+
+    @Autowired
+    private RestTemplate restTemplate;
+
+    public String getDataFromOtherService() {
+        String url = "http://OTHER-SERVICE/api/data";
+        return restTemplate.getForObject(url, String.class);
+    }
+}
+
+@Configuration
+public class AppConfig {
+
+    @Bean
+    @LoadBalanced
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
+}
+```
+
+By using `@LoadBalanced`, the `RestTemplate` can automatically use Eureka to find the service instances and perform client-side load balancing.
