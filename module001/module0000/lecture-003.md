@@ -53,6 +53,8 @@ Title: Java Part 3
 | 44     | [What does the peek() method do? When should you use it?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-003.html#-what-does-the-peek-method-do-when-should-you-use-it)                                                                                                         |
 | 45     | [Java Collections automatic reallocation(ensureCapacity) details when size is reached](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-003.html#-what-does-the-peek-method-do-when-should-you-use-it)                                                                            |
 | 46     | [Java collections interface and class mindmap?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-003.html#-what-does-the-peek-method-do-when-should-you-use-it)                                                                                                                   |
+| 47     | [Explain Optional class and Functional interface](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-003.html#-what-does-the-peek-method-do-when-should-you-use-it)                                                                                                                 |
+| 48     | [Use case of Functional interface](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-003.html#-what-does-the-peek-method-do-when-should-you-use-it)                                                                                                                                |
 
 ## \*. You have thread T1, T2, and T3, how will you ensure that thread T2 run after T1 and thread T3 run after T2?
 
@@ -1201,6 +1203,293 @@ Note: The actual resizing behavior can be influenced by custom constructors or i
 | **TreeMap**     | N/A                 | N/A               |
 | **TreeSet**     | N/A                 | N/A               |
 
-## \*. Java collections interface and class mindmap ?
+## \*. Java collections interface and class mindmap
 
 ![](../../assets/Java_Collections_Cheat_Sheet.webp)
+
+## \*. Explain Optional class and Functional interface
+
+### Java `Optional` Class
+
+The `Optional` class in Java, introduced in Java 8, is a container that may or may not hold a non-null value. It is used to represent the presence or absence of a value and to avoid `NullPointerException`. `Optional` is often used to handle null values in a more explicit and readable way.
+
+#### Common Methods of `Optional`
+
+1. **Creation**
+
+   - `Optional.of(value)`: Creates an `Optional` with the given non-null value.
+   - `Optional.ofNullable(value)`: Creates an `Optional` that can hold a null value.
+   - `Optional.empty()`: Creates an empty `Optional`.
+
+2. **Checking Value Presence**
+
+   - `isPresent()`: Returns `true` if the value is present, `false` otherwise.
+   - `ifPresent(Consumer<? super T> action)`: Executes the given action if a value is present.
+
+3. **Retrieving the Value**
+
+   - `get()`: Returns the value if present; otherwise, throws `NoSuchElementException`.
+   - `orElse(T other)`: Returns the value if present; otherwise, returns the provided default value.
+   - `orElseGet(Supplier<? extends T> other)`: Returns the value if present; otherwise, invokes the provided supplier and returns the result.
+   - `orElseThrow(Supplier<? extends X> exceptionSupplier)`: Returns the value if present; otherwise, throws an exception created by the provided supplier.
+
+4. **Transforming the Value**
+   - `map(Function<? super T, ? extends U> mapper)`: Applies the provided function to the value if present and returns an `Optional` with the result.
+   - `flatMap(Function<? super T, Optional<U>> mapper)`: Applies the provided function to the value if present and returns the result.
+
+#### Example Usage
+
+```java
+import java.util.Optional;
+
+public class OptionalExample {
+    public static void main(String[] args) {
+        // Creating Optional objects
+        Optional<String> optionalValue = Optional.of("Hello, World!");
+        Optional<String> emptyOptional = Optional.empty();
+        Optional<String> nullableOptional = Optional.ofNullable(null);
+
+        // Checking value presence
+        if (optionalValue.isPresent()) {
+            System.out.println(optionalValue.get());
+        }
+
+        // Using ifPresent to avoid null checks
+        optionalValue.ifPresent(System.out::println);
+
+        // Providing a default value
+        System.out.println(nullableOptional.orElse("Default Value"));
+
+        // Throwing an exception if value is not present
+        try {
+            emptyOptional.orElseThrow(() -> new IllegalStateException("Value is missing!"));
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        // Transforming the value
+        Optional<Integer> length = optionalValue.map(String::length);
+        length.ifPresent(System.out::println);
+    }
+}
+```
+
+### Functional Interfaces
+
+Functional interfaces are interfaces with a single abstract method. They provide target types for lambda expressions and method references. Java 8 introduced several built-in functional interfaces in the `java.util.function` package.
+
+#### Common Functional Interfaces
+
+1. **Consumer<T>**: Represents an operation that takes a single input argument and returns no result.
+
+   - Method: `void accept(T t)`
+
+2. **Supplier<T>**: Represents a supplier of results.
+
+   - Method: `T get()`
+
+3. **Function<T, R>**: Represents a function that takes one argument and produces a result.
+
+   - Method: `R apply(T t)`
+
+4. **Predicate<T>**: Represents a predicate (boolean-valued function) of one argument.
+
+   - Method: `boolean test(T t)`
+
+5. **UnaryOperator<T>**: Represents an operation on a single operand that produces a result of the same type as its operand.
+
+   - Method: `T apply(T t)`
+
+6. **BinaryOperator<T>**: Represents an operation upon two operands of the same type, producing a result of the same type as the operands.
+   - Method: `T apply(T t1, T t2)`
+
+#### Example Usage
+
+```java
+import java.util.function.*;
+
+public class FunctionalInterfaceExample {
+    public static void main(String[] args) {
+        // Using a Consumer
+        Consumer<String> consumer = System.out::println;
+        consumer.accept("Hello, Consumer!");
+
+        // Using a Supplier
+        Supplier<String> supplier = () -> "Hello, Supplier!";
+        System.out.println(supplier.get());
+
+        // Using a Function
+        Function<String, Integer> function = String::length;
+        System.out.println(function.apply("Hello, Function!"));
+
+        // Using a Predicate
+        Predicate<String> predicate = s -> s.isEmpty();
+        System.out.println(predicate.test("Hello, Predicate!"));
+
+        // Using a UnaryOperator
+        UnaryOperator<String> unaryOperator = s -> s.toUpperCase();
+        System.out.println(unaryOperator.apply("Hello, UnaryOperator!"));
+
+        // Using a BinaryOperator
+        BinaryOperator<String> binaryOperator = (s1, s2) -> s1 + s2;
+        System.out.println(binaryOperator.apply("Hello, ", "BinaryOperator!"));
+    }
+}
+```
+
+### Use Case: Combining `Optional` and Functional Interfaces
+
+A practical use case of combining `Optional` with functional interfaces is in streamlining operations that might return null values. For example, fetching a user's email address and then sending a welcome email if the address is present:
+
+```java
+import java.util.Optional;
+import java.util.function.Consumer;
+
+public class OptionalWithFunctionalInterface {
+    public static void main(String[] args) {
+        User user = new User("john.doe@example.com");
+        sendWelcomeEmail(user);
+    }
+
+    static void sendWelcomeEmail(User user) {
+        Optional.ofNullable(user.getEmail())
+                .ifPresent(sendEmail);
+    }
+
+    static Consumer<String> sendEmail = email -> {
+        // Simulate sending email
+        System.out.println("Sending welcome email to " + email);
+    };
+
+    static class User {
+        private String email;
+
+        User(String email) {
+            this.email = email;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+    }
+}
+```
+
+## \*. Use case of Functional interface
+
+Using a functional interface instead of a normal interface in Java has several advantages, particularly in the context of functional programming introduced in Java 8. Here are some key reasons why functional interfaces are preferred in many scenarios:
+
+### 1. **Lambda Expressions and Method References**
+
+Functional interfaces are designed to be implemented using lambda expressions and method references, which provide a more concise and readable way to express instances of single-method interfaces.
+
+#### Example
+
+**With a normal interface:**
+
+```java
+interface Printer {
+    void print(String message);
+}
+
+public class NormalInterfaceExample {
+    public static void main(String[] args) {
+        Printer printer = new Printer() {
+            @Override
+            public void print(String message) {
+                System.out.println(message);
+            }
+        };
+        printer.print("Hello, World!");
+    }
+}
+```
+
+**With a functional interface:**
+
+```java
+@FunctionalInterface
+interface Printer {
+    void print(String message);
+}
+
+public class FunctionalInterfaceExample {
+    public static void main(String[] args) {
+        Printer printer = message -> System.out.println(message);
+        printer.print("Hello, World!");
+    }
+}
+```
+
+The functional interface example is more concise and easier to read.
+
+### 2. **Standardization and Reusability**
+
+Java 8 introduced a set of standard functional interfaces in the `java.util.function` package, which are widely used throughout the JDK and third-party libraries. These standard interfaces improve code reusability and interoperability.
+
+#### Example
+
+Using a `Consumer` from `java.util.function`:
+
+```java
+import java.util.function.Consumer;
+
+public class ConsumerExample {
+    public static void main(String[] args) {
+        Consumer<String> printer = message -> System.out.println(message);
+        printer.accept("Hello, World!");
+    }
+}
+```
+
+### 3. **Stream API Integration**
+
+Functional interfaces are essential for using the Stream API, which provides a powerful and expressive way to work with collections and other data sources.
+
+#### Example
+
+```java
+import java.util.Arrays;
+import java.util.List;
+
+public class StreamExample {
+    public static void main(String[] args) {
+        List<String> names = Arrays.asList("Alice", "Bob", "Charlie");
+
+        names.stream()
+             .filter(name -> name.startsWith("A"))
+             .forEach(System.out::println);
+    }
+}
+```
+
+In this example, `filter` and `forEach` use functional interfaces `Predicate` and `Consumer`, respectively.
+
+### 4. **Simplified Syntax**
+
+Functional interfaces enable simplified syntax for implementing methods, especially when the implementation is straightforward.
+
+#### Example
+
+**Without lambda (using anonymous inner class):**
+
+```java
+Runnable runnable = new Runnable() {
+    @Override
+    public void run() {
+        System.out.println("Running");
+    }
+};
+new Thread(runnable).start();
+```
+
+**With lambda:**
+
+```java
+Runnable runnable = () -> System.out.println("Running");
+new Thread(runnable).start();
+```
+
+### 5. **Improved Code Readability and Maintainability**
+
+The use of lambda expressions and functional interfaces often results in code that is more readable and maintainable by reducing boilerplate code and making the intent clearer.
