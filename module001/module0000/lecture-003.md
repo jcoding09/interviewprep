@@ -51,6 +51,8 @@ Title: Java Part 3
 | 42     | [What are CompletableFutures in Java, and how do they enable asynchronous programming?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-003.html#-what-are-completablefutures-in-java-and-how-do-they-enable-asynchronous-programming)                                           |
 | 43     | [What do you mean by the statement- Stream is lazy?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-003.html#-what-do-you-mean-by-the-statement--stream-is-lazy)                                                                                                                |
 | 44     | [What does the peek() method do? When should you use it?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-003.html#-what-does-the-peek-method-do-when-should-you-use-it)                                                                                                         |
+| 45     | [Java Collections automatic reallocation(ensureCapacity) details when size is reached](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-003.html#-what-does-the-peek-method-do-when-should-you-use-it)                                                                            |
+| 46     | [Java collections interface and class mindmap?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-003.html#-what-does-the-peek-method-do-when-should-you-use-it)                                                                                                                   |
 
 ## \*. You have thread T1, T2, and T3, how will you ensure that thread T2 run after T1 and thread T3 run after T2?
 
@@ -1132,3 +1134,73 @@ public class StreamPeekExample {
 
 - Use `peek()` when you want to inspect the elements of the stream at a certain point in the pipeline, usually for debugging purposes.
 - Avoid using `peek()` for anything that alters the state or relies on side-effects as it goes against the functional programming paradigm.
+
+## \*. Java Collections automatic reallocation(ensureCapacity) details when size is reached
+
+### 1. **ArrayList**
+
+- **Initial Capacity**: By default, the initial capacity of an `ArrayList` is 10.
+- **Resize Behavior**: When an `ArrayList` needs to grow, it increases its size by approximately 50%.
+- **Example**: If the current capacity is `n`, it will be increased to `n + (n >> 1)` (which is equivalent to 1.5 times the current capacity).
+
+### 2. **HashMap**
+
+- **Initial Capacity**: The default initial capacity of a `HashMap` is 16.
+- **Resize Behavior**: When a `HashMap` is resized, its capacity is doubled.
+- **Load Factor**: The default load factor is 0.75, meaning the `HashMap` will resize when the number of entries exceeds 75% of the current capacity.
+- **Example**: If the current capacity is `n`, it will be increased to `2 * n`.
+
+### 3. **HashSet**
+
+- **Initial Capacity**: The default initial capacity of a `HashSet` is 16.
+- **Resize Behavior**: Similar to `HashMap`, a `HashSet` doubles its capacity when it exceeds the load factor threshold.
+- **Load Factor**: The default load factor is also 0.75.
+- **Example**: If the current capacity is `n`, it will be increased to `2 * n`.
+
+### 4. **LinkedList**
+
+- `LinkedList` does not have a predefined capacity or resizing mechanism as it is a doubly linked list. It grows dynamically with each addition.
+
+### 5. **Vector**
+
+- **Initial Capacity**: By default, the initial capacity of a `Vector` is 10.
+- **Resize Behavior**: When a `Vector` needs to grow, it doubles its size by default.
+- **Example**: If the current capacity is `n`, it will be increased to `2 * n`.
+
+### 6. **Stack**
+
+- `Stack` extends `Vector` and hence inherits its resizing behavior.
+
+### 7. **TreeMap** and **TreeSet**
+
+- These collections are based on Red-Black Trees and do not require resizing because they do not use an underlying array structure. Their growth depends on the tree node insertions and balancing operations.
+
+### Summary Table
+
+| Collection Type | Initial Capacity | Resize Increase Percentage |
+| --------------- | ---------------- | -------------------------- |
+| ArrayList       | 10               | 50%                        |
+| HashMap         | 16               | 100%                       |
+| HashSet         | 16               | 100%                       |
+| LinkedList      | Dynamic          | N/A                        |
+| Vector          | 10               | 100%                       |
+| Stack           | 10               | 100%                       |
+| TreeMap         | N/A              | N/A                        |
+| TreeSet         | N/A              | N/A                        |
+
+Note: The actual resizing behavior can be influenced by custom constructors or initial capacity settings provided during instantiation.
+
+| Collection Type | Default Load Factor | Resize Percentage |
+| --------------- | ------------------- | ----------------- |
+| **ArrayList**   | N/A                 | 50% (1.5x)        |
+| **HashMap**     | 0.75                | 100% (2x)         |
+| **HashSet**     | 0.75                | 100% (2x)         |
+| **LinkedList**  | N/A                 | N/A               |
+| **Vector**      | N/A                 | 100% (2x)         |
+| **Stack**       | N/A                 | 100% (2x)         |
+| **TreeMap**     | N/A                 | N/A               |
+| **TreeSet**     | N/A                 | N/A               |
+
+## \*. Java collections interface and class mindmap ?
+
+![](../../assets/Java_Collections_Cheat_Sheet.webp)
