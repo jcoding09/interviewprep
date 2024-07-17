@@ -33,7 +33,8 @@ Title : Spring Boot part 1
 | 24     | [Microservice Architecture and its associated Design Patterns, with a focus on the Circuit Breaker and API Gateway patterns.](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-microservice-architecture-and-its-associated-design-patterns-with-a-focus-on-the-circuit-breaker-and-api-gateway-patterns)                                                                                                                                                                   |
 | 25     | [The distinction between a Discovery Client and a Discovery Server.](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-the-distinction-between-a-discovery-client-and-a-discovery-server)                                                                                                                                                                                                                                                                                    |
 | 26     | [The role and significance of Message Queues in a microservices environment.](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-the-role-and-significance-of-message-queues-in-a-microservices-environment)                                                                                                                                                                                                                                                                  |
-| 27     | [How one spring boot application communicate with another spring boot application?]()                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| 27     | [How one spring boot application communicate with another spring boot application?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-how-one-spring-boot-application-communicate-with-another-spring-boot-application)                                                                                                                                                                                                                                                      |
+| 28     | [How to package Spring Boot application using Maven?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-002.html#-how-one-spring-boot-application-communicate-with-another-spring-boot-application)                                                                                                                                                                                                                                                                                    |
 
 ## \*. How to create custom exception while creating the REST API in Spring Boot.
 
@@ -1197,3 +1198,85 @@ public class AppConfig {
 ```
 
 By using `@LoadBalanced`, the `RestTemplate` can automatically use Eureka to find the service instances and perform client-side load balancing.
+
+## \*. How to package Spring Boot application using Maven?
+
+To package a Spring Boot application using Maven, you typically follow these steps:
+
+1. **Add the Spring Boot Maven Plugin**: Ensure that your `pom.xml` file includes the Spring Boot Maven plugin. This plugin provides the `repackage` goal, which creates an executable JAR file.
+
+2. **Run the Maven Command**: Use the `mvn` command to install your dependencies and repackage the application.
+
+Here’s a step-by-step guide:
+
+### 1. Update `pom.xml`
+
+Ensure that your `pom.xml` file includes the Spring Boot Maven plugin. Below is an example of a `pom.xml` file with the necessary plugin:
+
+```xml
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.example</groupId>
+    <artifactId>my-spring-boot-app</artifactId>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.0.0</version> <!-- Use the version appropriate for your project -->
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+
+    <dependencies>
+        <!-- Add your dependencies here -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+        <!-- Other dependencies -->
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+```
+
+### 2. Run the Maven Command
+
+Once your `pom.xml` file is correctly set up, you can run the following Maven command from the root directory of your project:
+
+```sh
+mvn clean install spring-boot:repackage
+```
+
+### Explanation:
+
+- `mvn clean`: This command cleans the `target` directory, which removes any previous build artifacts.
+- `mvn install`: This command compiles your code, runs tests, and installs the resulting JAR file into your local Maven repository.
+- `spring-boot:repackage`: This goal repackages your application into an executable JAR file, which can be run with `java -jar`.
+
+### Full Command Example:
+
+Here’s the full command you can use:
+
+```sh
+mvn clean install spring-boot:repackage
+```
+
+After running this command, you should find the packaged JAR file in the `target` directory of your project. The JAR file will be executable and can be run using:
+
+```sh
+java -jar target/my-spring-boot-app-1.0.0.jar
+```
+
+This process ensures that your Spring Boot application is properly packaged and ready for deployment.
