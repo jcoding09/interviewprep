@@ -4,9 +4,9 @@ Title: Java Part 4
 
 ### Table of Contents
 
-| Sr No. | Question                                                                                                                                            |
-| ------ | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 0      | [How to clear buffer after processing small portion of the large file?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-004) |
+| Sr No. | Question                                                                                                                                                                                                                                                  |
+| ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0      | [How to clear buffer after processing small portion of the large file?](https://jcoding09.github.io/interviewprep/module001/module0000/lecture-004.html#-how-to-clear-buffer-after-processing-small-portion-of-the-large-file-also-add-csv-to-json-logic) |
 
 ## \*. How to clear buffer after processing small portion of the large file (also add CSV to JSON logic)?
 
