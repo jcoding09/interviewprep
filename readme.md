@@ -37,8 +37,10 @@
 
 #### [Module 7 : Java Part 3](./module001/module0000/lecture-003.md)
 
-#### [Module 8 : Spring Boot Part 1](./module001/module0000/lecture-002.md)
+#### [Module 8 : Java Part 4](./module001/module0000/lecture-004.md)
 
-#### [Module 9 : JAVA Code](./module002/module0000/lecture-001.md)
+#### [Module 9 : Spring Boot Part 1](./module001/module0000/lecture-002.md)
 
-#### [Module 10 : Spring Boot Code](./module002/module0000/lecture-002.md)
+#### [Module 10 : JAVA Code](./module002/module0000/lecture-001.md)
+
+#### [Module 11 : Spring Boot Code](./module002/module0000/lecture-002.md)
